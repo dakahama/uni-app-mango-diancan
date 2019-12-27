@@ -1,0 +1,20 @@
+body{
+    background:#E2DED2 url(../imgs/background.jpg);
+}
+
+#topmenu,#topmenu ul a{
+    background:#655B52;
+}
+
+#topmenu ul a:hover{
+    background-color:#408B64;
+}
+
+::-moz-selection{
+    background:#676350;
+    color:#FFF;}
+
+::selection {
+    background:#676350;
+    color:#FFF;
+}

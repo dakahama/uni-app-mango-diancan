@@ -1,0 +1,5 @@
+body{ background:#72BE5B url(images/bg3.jpg) bottom no-repeat; background-attachment:fixed;}
+header #sitename { background:#7EC663;}
+a:hover,#leftblocks section ul a:hover,#rightblocks .articleblock ul a:hover,.articlelist ul a:hover ,.articlepanel h2 a:hover{ color:#5CAB3F; }
+#topmenu,#topmenu ul a,#topmenu ul li.current-category-ancestor li a, #topmenu ul li.current-menu-item li a { background-color:#666;}
+#topmenu ul a:hover, #topmenu ul li.current-menu-item a, #topmenu ul li.current-category-ancestor a,.frontpage #topmenu ul #menu-item-528 a,#topmenu ul li.current-category-ancestor li a:hover, #topmenu ul li.current-menu-item li a:hover,#rightblocks .tagsblock ul a:hover { background-color:#7EC663;}

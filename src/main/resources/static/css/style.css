@@ -1,0 +1,296 @@
+﻿/*
+
+Theme Name: dashulin2
+Theme URI: http://dashulin.com/
+Description: dashulin theme.
+Author: soking
+Version: 2.0
+Tags: tree, green, white
+
+*/
+
+body { font-size:12px; font-family: 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif; margin:0; }
+header, section, footer, aside, nav, article, figure { display: block; }
+a { text-decoration:none; color:#655B52; }
+a:hover { color:#408B64; }
+img { border:0; }
+strong { color:#444; }
+ul { margin:0; padding:0; list-style:none; }
+li { list-style:none; }
+form { margin:0; }
+input { font-size:12px; font-family: 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+td, th { padding:0 3px; border:1px solid #CCC; }
+tr:hover { background-color:#F5F5F5; }
+.floatright { float:right; }
+.floatleft { float:left; }
+.aligncenter { margin:0 auto; clear:both; display:block; }
+img.aligncenter { margin-bottom:10px; }
+.margintop { margin-top:12px; }
+#wrap_page { width:997px; margin:0 auto; padding-top:20px; }
+header { background:#FFF; padding:15px 20px 18px; position:relative; z-index:10; }
+#sitename { background:#89C9A8; width:88px; height:31px; margin:0 0 10px 0; display:block; }
+#sitename img { display:block; }
+#sitename:hover { background:#FE0; }
+#shortcuts { position:absolute; right:20px; top:22px; }
+#shortcuts ul li { display:inline-block; float:left; padding:0 14px 0 15px; background:url(images/shortcutsbg.gif) left no-repeat; }
+#shortcuts ul li.first { background:none; }
+#shortcuts ul a { color:#999; }
+#shortcuts ul a:hover { color:#408B64; text-decoration:underline; }
+.qr{ position:relative; z-index:20;}
+.qr span{ display:none; position:absolute; left:4px; top:19px;}
+.qr a:hover span{ display:block;}
+
+#shortcuts ul .styleswitcher { width:24px; height:13px; float:left; position:relative; margin-top:1px; padding-right:0; z-index:25;}
+#shortcuts ul .styleswitcher>a { background:#D6D6D6 url(images/styleswitchicon.gif) center no-repeat; width:24px; height:13px; text-indent:-9999px; display:block; outline:none; }
+#shortcuts ul .styleswitcher ul { display:none; width:54px; height:11px; border:1px solid #D6D6D6; position:absolute; right:23px; top:0; background:#FFF; }
+#shortcuts ul .styleswitcher:hover ul { display:block; }
+#shortcuts ul .styleswitcher ul li { padding:0; margin-left:3px; background:none; margin-top:2px; }
+#shortcuts ul .styleswitcher ul li a { width:14px; height:7px; display:block; text-indent:-9999px; background:#EEE; outline:none; }
+#shortcuts ul .styleswitcher ul li.style1 a { background:#E2DED2; }
+#shortcuts ul .styleswitcher ul li.style2 a { background:#BF9B71; }
+#shortcuts ul .styleswitcher ul li.style3 a { background:#95C86F; }
+/*------------主菜单-----------*/
+
+
+
+#topmenu { background:#655B52; height:34px; margin:10px 0 0 0; position:relative; display:block; z-index:11; }
+#topmenu ul { }
+#topmenu ul li { float:left; display:inline-block; border-right:#FFF 3px solid; background:#FFF; position:relative; }
+#topmenu ul a { line-height:34px; height:34px; background:#655B52; display:inline-block; padding:0 18px; font-size:15px; color:#FFF; font-weight:bold; }
+#topmenu ul a:hover, #topmenu ul li.current-menu-item a, #topmenu ul li.current-category-ancestor a { background-color:#408B64; }
+#topmenu ul #menu-item-528 a { background-image:url(images/dot1.gif); background-position:0 0; background-repeat:no-repeat; }
+.frontpage #topmenu ul #menu-item-528 a { background-color:#408B64; }
+#topmenu ul ul { display:none; position:absolute; top:100%; left:0; }
+#topmenu ul li:hover ul { display:block; width:100%; }
+#topmenu ul ul li { border-right:0; display:inline-block; width:100%; float:none; }
+#topmenu ul ul a { font-size:13px; line-height:28px; height:28px; display:block; }
+#topmenu ul li.current-category-ancestor li a, #topmenu ul li.current-menu-item li a { background-color:#655B52; }
+#topmenu ul li.current-category-ancestor li a:hover, #topmenu ul li.current-menu-item li a:hover { background-color:#408B64; }
+/*------------搜索---------*/
+
+
+#topsearch { width:200px; position:absolute; right:0; }
+#topsearch form { position:relative; }
+#topsearch form #searchword { position:absolute; right:36px; top:5px; width:145px; height:18px; border:0; padding:1px 2px 3px; margin:0; color:#666; border-top:2px solid #EEE; border-left:2px solid #EEE; }
+#topsearch form #searchbutton { position:absolute; right:6px; top:5px; }
+#topsearch form #searchbutton:hover { background:#444; }
+/*------------首页最新植物-----------*/
+
+
+#newplantblock, #plantlist { overflow:auto; height:241px; width:968px; margin-left:-10px; padding-bottom:0; }
+#newplantblock img, #plantlist img { width:100px; height:100px; display:block; }
+#newplantblock li, #plantlist li { float:left; display:inline; width:111px; height:110px; margin:10px 0 0 10px; }
+#newplantblock li a, #plantlist li a { width:100px; height:100px; border:1px solid #E5E5E5; padding:4px; display:block; position:relative; font-size:12px; }
+#newplantblock li a span { display:none; width:100px; text-align:center; position:absolute; bottom:0px; left:4px; line-height:21px; text-align:center; }
+#newplantblock li a:hover { background:#342F29; border:1px solid #342F29; color:#FFF; }
+#newplantblock li a:hover span { display:block; background:#342F29; }
+#wrap_content { }
+#plantlist { height:auto; }
+#plantlist li { height:auto; }
+#plantlist li a { height:100px; position:relative; color:#FFF; }
+#plantlist li span { display:block; width:100px; text-align:center; position:absolute; bottom:4px; background:rgba(0, 0, 0, 0.3); background:url(images/black30.png)\9; line-height:19px; left:4px; }
+#plantlist li a:hover { background:#111; border-color:#111; color:#FFF; }
+#plantlist li a:hover span { background:rgba(0, 0, 0, 0.6); background:url(images/black60.png)\9; }
+#leftblocks { float:left; width:756px; }
+#leftblocks section, #rightblocks section { width:228px; height:228px; float:left; display:inline; background:#FFF; margin:12px 12px 0 0; padding:6px; }
+#leftblocks section h2, #rightblocks section h2 { font-size:15px; margin:0; padding:5px 0; color:#222; background:url(images/dot2.gif) left top no-repeat; padding-left:12px; }
+#leftblocks section h2 a, #rightblocks section h2 a { color:#222; }
+#leftblocks section ul { height:190px; background:url(images/dottedline1.png) repeat-y; line-height:180%; }
+#leftblocks section ul li { float:left; width:64px; padding:0 0 0 12px; }
+#leftblocks section ul h3 { margin:0; font-size:12px; color:#666; }
+#leftblocks section ul a { color:#655B52; }
+#leftblocks .specialplant ul a { display:block; }
+#leftblocks section ul a:hover { color:#408B64; text-decoration:underline; }
+#rightblocks { width:241px; float:left; }
+#rightblocks section { width:229px; height:228px; padding:6px; overflow:hidden; margin:12px 0 0 0; }
+#rightblocks .articleblock li { padding:0 8px 0 8px; line-height:180%; overflow:hidden; height:22px; }
+#rightblocks .articleblock ul a { background:url(images/dot3.gif) 0 8px no-repeat; padding-left:10px; color:#655B52; display:inline-block; text-overflow:ellipsis; }
+#rightblocks .articleblock ul a:hover { background:url(images/dot3.gif) 0 -72px no-repeat; color:#408B64; text-decoration:underline; }
+#rightblocks .tagsblock ul { margin:0 4px 0 9px; }
+#rightblocks .tagsblock li { line-height:180%; height:22px; display:block; float:left; margin-right:4px; width:50px; overflow:hidden;}
+#rightblocks .tagsblock ul a { padding:0 0 0 0; }
+#rightblocks .tagsblock ul a:hover { background:#408B64; color:#FFF; }
+footer { clear:both; width:997px; margin:0 auto; height:40px; text-indent:-9999px; background:url(images/copyright.png) right no-repeat; }
+#content { width:655px; background:#FFF; float:left; margin:12px 12px 0 0; padding:15px; }
+#widecontent { width:957px; background:#FFF; margin:12px 12px 0 0; padding:15px 20px 20px 20px; }
+h1.articletitle { text-align:left; margin:0; font-size:20px; color:#555; }
+
+.plantcard{ color:#655B52;}
+
+.nextpre { font-family:Verdana, Geneva, sans-serif; color:#999; }
+.nextpre a { font-family: 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif !important; }
+h1.articletitle { font-size:20px; text-align:center; margin:10px 0; color:#555; }
+.info { background:#F2F2F2; padding:2px 10px 2px 0; color:#999; }
+.info a { color:#999; margin-right:5px; }
+.info span.item { color:#666; margin-left:10px; }
+.info .floatright { color:#999; font-size:11px; }
+.edit { width:30px; height:14px; background:url(images/iconedit.gif) 0 0 no-repeat; display:block; text-indent:-9999px; }
+a:hover .edit { background-position:0 -14px; }
+
+
+
+#content article,#widecontent article{ line-height:180%; font-size:15px; color:#655B52; padding:15px 10px; text-align:justify; text-justify:inter-ideograph; }
+
+article h3, article h5 { background:url(images/subtitle.gif) left bottom no-repeat; margin:5px 0; padding:0 0 0 15px; font-size:15px; color:#333; }
+#content article img { padding:4px; border:1px solid #EEE; }
+#content article a { padding-right:4px; background:url(images/dot5.gif) right 3px no-repeat; margin-right:3px; color:#555; font-weight:700; }
+#content article a:hover { color:#408B64; }
+.ds-powered-by{ display:none;}
+
+.articleqr{ text-align:center; color:#408B64;}
+.articleqr b{ width:150px;  height:150px; display:block; margin:0 auto; padding:10px; border:1px solid #DDD; overflow:hidden;}
+#content article .articleqr  img{ padding:0; border:0;}
+
+
+
+
+
+#rightblock { float:right; width:266px; padding:5px 17px 20px 17px; background:#FFF; margin:12px 0 0 0; }
+#rightblock h3, .articlelist h2, .videolist h2 { margin:0 0 5px 0; font-size:16px; color:#408b64; padding:10px 0 5px 0; border-bottom:1px solid #EEE; }
+
+#rightblock .sidelist li{ border-bottom:1px dotted #EEE;}
+#rightblock .sidelist li:last-child{ border-bottom:none;}
+#rightblock .sidelist li h5{ margin:5px 0; font-size:14px;}
+#rightblock .sidelist li p{ margin:5px 0; color:#999;}
+#rightblock #ds-recent-comments li.ds-comment{ border-top:none;}
+
+#rightblock #text-3{ margin:0 -17px;}
+
+#commentform { padding:5px 0 0 0; }
+#commentform label { width:80px; margin:2px 0 0 0; vertical-align:text-top; color:#666; }
+#commentform input, #commentform textarea { border:1px solid #CCC; margin:0 0 6px 0; padding:2px; font-family:Arial, Helvetica, sans-serif; color:#666; font-size:12px; vertical-align:top; }
+#commentform span { color:#999; }
+#commentform textarea { width:220px; max-width: 220px; min-width: 153px; }
+#commentform .submitbutton { margin-left:40px; padding:0 5px; width:70px; line-height:21px; height:21px; }
+.commentrss { font-size:10px; font-family:Verdana, Geneva, sans-serif; }
+.commentrss a { color:#FA0; }
+.commentlist { margin:0; padding:0; list-style:none; color:#555; }
+.commentlist p { margin:8px 0; line-height:150%; }
+.commentmetadata { background:#F2F2F2; }
+.commentmetadata strong, .commentmetadata strong a { color:#888; }
+.commentmetadata .date { float:right; font-size:10px; font-family:Verdana, Geneva, sans-serif; color:#999; line-height:17px; }
+/*------------------植物文摘--------------------*/
+.wzlist li{ border-bottom:1px solid #EEE; padding:12px 0; overflow:hidden;}
+.wzlist li h3{ margin:0 0 5px 0; font-size:16px; }
+.wzlist li h3 a{color:#655B52;}
+.wzlist li p{ margin:0; color:#999; line-height:180%;}
+.wzlist li img{ float:left; margin-right:15px;}
+
+
+.articlelist { width:284px; float:left; background:#FFF; margin:12px 0 12px 12px; padding:5px 20px 15px 20px; min-height:360px; }
+.articlelist.first { margin-left:0; width:285px; }
+.articlelist li { line-height:200%; }
+.articlelist ul { margin:0 2px; }
+.articlelist ul a { background:url(images/dot3.gif) 0 6px no-repeat; padding-left:10px; color:#666; }
+.articlelist ul a:hover { background:url(images/dot3.gif) 0 -74px no-repeat; color:#408B64; }
+
+
+.videolist { display:block; clear:both; background:#FFF; padding:5px 20px 15px 20px; overflow:auto; }
+.videolist li { width:135px; float:left; padding:0; margin:6px 0 10px 29px; position:relative; min-height:118px; }
+.videolist ul li:first-child { margin-left:0; }
+.videolist li a.play { width:31px; height:21px; background:url(images/iconplay.png) 0 -21px no-repeat; display:block; text-indent:-9999px; position:absolute; left:52px; top:31px; outline:none; }
+.videolist li a.play:hover { background-position:0 0; }
+.videolist li span { position:absolute; right:0; bottom:0; background:url(images/dot4.png) left no-repeat; padding-left:13px; color:#BBB; font-family:Arial, Helvetica, sans-serif; font-size:11px; }
+#articlelist ul { margin:10px 0; overflow:auto; }
+#articlelist li { width:300px; display:block; float:left; margin-right:18px; padding:5px 0; }
+#articlelist li a { padding-left:10px; background:url(images/dot3.gif) 0 6px no-repeat; }
+#articlelist li a:hover { background-position:0 -74px; }
+/*--------------------搜索-----------------*/
+
+.searchresult { width:957px; background:#FFF; margin:12px 12px 0 0; padding:15px 20px 20px 20px; }
+.searchresult ul { overflow:auto; clear:both; padding-bottom:3px; }
+.articlepanel { width:198px; float:left; margin:12px 0 0 0; padding:15px 15px 5px 15px; border:1px solid #DDD; text-align:justify; text-justify:inter-ideograph; }
+.searchresult .plantimage { float:left; margin:0 10px 10px 0; width:100px; height:100px; }
+.articlepanel h2 { font-size:13px; margin:0 0 5px 0; }
+.articlepanel h2 a { color:#222; }
+.articlepanel h2 a:hover { color:#408B64; }
+.articlepanel .entry { display:block; clear:both; color:#666; border-top:1px solid #EEE; margin:5px 0; }
+.articlepanel .entry p { margin: 0; padding:5px 0; }
+.articlepanel .postMeta { color:#999; }
+.articlepanel .postMeta a { color:#999; }
+/*--------------------分页-----------------*/
+
+
+.pagenav { font-size:12px; margin:20px 0 10px 0; }
+.pagenav .current { padding:5px 10px; border:#EEE 1px solid; margin-right:4px; color:#6C3; }
+.pagenav a{ padding:5px 10px; border:#EEE 1px solid; margin-right:4px; color:#666; text-decoration:none; }
+.pagenav a:hover { color:#FFF; background:#655B52; border:#655B52 1px solid; }
+/*--------------------按科分类-----------------*/
+
+.tagslist ul { margin:20px; overflow:auto; min-height:400px; }
+.tagslist li { width:150px; float:left; padding:4px 0; }
+/*--------------------css3修饰-----------------*/
+
+#topsearch form #searchword, #topsearch form #searchbutton, #rightblocks .tagsblock ul a, #shortcuts ul .styleswitcher a, #shortcuts ul .styleswitcher ul { -moz-border-radius:2px; -khtml-border-radius: 2px; -webkit-border-radius:2px; border-radius: 2px; }
+#shortcuts ul .styleswitcher ul { -webkit-border-top-right-radius:0 0; -webkit-border-bottom-right-radius:0 0; -moz-border-radius:2px 0 0 2px; border-radius:2px 0 0 2px; }
+#shortcuts ul .styleswitcher:hover>a { -webkit-border-top-left-radius:0 0; -webkit-border-bottom-left-radius:0 0; -moz-border-radius:0 2px 2px 0; }
+#topmenu ul a, #leftblocks section h2, #rightblocks section h2 { text-shadow:1px 1px 0px rgba(0, 0, 0, 0.15); }
+header, #leftblocks section, #rightblocks section, #content, #rightblock, #widecontent, .articlelist, .videolist, .searchresult,#wrap_usercontent{ -webkit-box-shadow:2px 2px 2px rgba(0, 0, 0, 0.1); -moz-box-shadow:2px 2px 2px rgba(0, 0, 0, 0.1); box-shadow:0px 0px 4px rgba(0, 0, 0, 0.2); }
+.searchresult .articlepanel { -webkit-box-shadow:2px 2px 2px rgba(0, 0, 0, 0.1); -moz-box-shadow:1px 1px 1px rgba(0, 0, 0, 0.1); }
+#commentform input:focus, #commentform textarea:focus { -moz-box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.15); }
+/*---------------相关文章-----------------*/
+
+.related_post { overflow:hidden; clear:both; width:280px; }
+.related_post li { width:60px; height:80px; overflow:hidden; float:left; margin:10px 9px 0 0; text-align:center; line-height:200%; }
+.related_post img { width:60px; height:60px; display:block; }
+#rightblock .related_post li a { background:none; padding:0; }
+
+/*---------------投稿箱-----------------*/
+
+
+/*选中文字变色*/
+
+
+::-moz-selection {
+ background:#93C;
+ color:#FCF;
+}
+
+
+::selection {
+ background:#93C;
+ color:#FCF;
+}
+#shortcuts ul ul a:hover { }
+
+
+/*=============用户中心============*/
+#wrap_usercontent{ background:#FFF url(images/userleftbg.png) left repeat-y; margin-top:12px; overflow:hidden;}
+#leftblock{ width:100px; float:left; min-height:520px; background:#EEE;}
+.useravatar{ padding:20px 0; text-align:center;}
+.useravatar img{ width:60px; height:60px; border-radius:30px 30px; margin:0 auto;}
+.useravatar p{ margin:0; text-align:center; color:#464637; font-size:14px;}
+#usermenu{ border-top:1px solid #DDD; text-align:center;}
+#usermenu li{ border-bottom:1px solid #DDD; height:80px;}
+#usermenu a{ padding-top:45px; height:35px; line-height:25px; background:url(images/usericon.png) center 18px no-repeat; display:block; font-size:15px; color:#333;}
+#menu-item-3010 a{ background-position:center 18px;}
+#menu-item-3008 a{ background-position:center -62px;}
+#menu-item-3015 a{ background-position:center -142px;}
+#menu-item-3018 a{ background-position:center -222px;}
+#menu-item-3019 a{ background-position:center -302px;}
+#usermenu a:hover, #usermenu .current-menu-item a{ background-color:#408B64; color:#FFF;}
+
+
+#user_content{ width:800px; float:left; padding:20px 47px 20px 50px; font-size:15px; color:#333; }
+
+#user_con a{text-decoration:underline;}
+
+#user_con ul.wpuf-form li .wpuf-label { float: left; width: 15%;}
+#user_con ul.wpuf-form li .wpuf-fields {float: left; width: 85%;}
+ul.wpuf-form li .textfield,ul.wpuf-form li .email,ul.wpuf-form li .password,ul.wpuf-form li #pass1,ul.wpuf-form li .url{ width:98%; padding:5px; height:24px; font-size:15px;}
+ul.wpuf-form li .textareafield{width:98%; padding:5px; font-size:15px; font-family:"微软雅黑";}
+.usertitle,#user_content .articletitle{ color:#408B64; font-size:24px; padding:0 0 15px 0; border-bottom:1px solid #CCC; text-align:left;}
+#user_con #post_content_ifr{ height:500px;}
+
+#user_con .wp-post-image{
+height:50px; width:auto;
+}
+table.wpuf-table{ border-collapse:collapse;}
+.wpuf-pagination{ height:40px; margin:20px 0;}
+h2.page-head{ display:none;}
+.post_count{ padding:10px 0;}
+.attachment-name img{ width:150px;}
+.tougaonote{  background:#F5F5F5; padding:15px 20px; margin:-10px 0 20px 0; font-size:13px; color:#9A8C83;}
+.tougaonote h3{ margin:0; color:#408b64;}
+.tougaonote p{ margin:0; line-height:200%;}
+.tougaonote img{ float:right; padding:3px; background:#B8AEA8;}
