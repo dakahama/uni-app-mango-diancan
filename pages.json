@@ -1,0 +1,98 @@
+{
+	"pages": [ 
+		//pages数组中第一项表示应用启动页 
+		//参考:https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"app-plus": {
+					"scrollIndicator":"none",
+					"titleNView": {
+						"searchInput": {
+							"align":"left",
+							"backgroundColor":"#F7F7F7",
+							"borderRadius":"4px",
+							"disabled":true,
+							"placeholder":"在此处搜索您想要的菜品",
+							"placeholderColor":"#CCCCCC"
+						},
+						"buttons": [
+							{
+								"color":"#989898",
+								"colorPressed":"#FD6801",
+								"float":"left",
+								"fontSize":"22px",
+								"fontSrc":"/static/font/iconfont.ttf",
+								"text":	"\ue67a"			
+							},
+							{
+								"color":"#989898",
+								"colorPressed":"#FD6801",
+								"float":"right",
+								"fontSize":"22px",
+								"fontSrc":"/static/font/iconfont.ttf",
+								"text":	"\ue661"			
+							}
+						]
+					}
+				}
+			}
+		},
+		{
+			"path":"pages/list/list",
+			"style": {
+				"navigationBarTitleText": "菜单"
+			}
+		},
+		{
+			"path":"pages/cart/cart",
+			"style": {
+				"navigationBarTitleText": "购物车"
+			}
+		},
+		{
+			"path":"pages/profile/profile",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "芒果点餐",
+		"navigationBarBackgroundColor": "#F1F1F1",
+		"backgroundColor": "#F1F1F1"
+	},
+	"tabBar": {
+		"color":"#B1B1B1",
+		"selectedColor":"#FD6801",
+		"borderStyle":"black",
+		"backgroundColor":"#FFFFFF",
+		"list":[
+			{
+				"pagePath":"pages/index/index",
+				"iconPath":"static/iconimgs/index.png",
+				"selectedIconPath":"static/tarbarimgs/index_selected.png",
+				"text":"主页"
+			},
+			{
+				"pagePath":"pages/list/list",
+				"iconPath":"static/tarbarimgs/list.png",
+				"selectedIconPath":"static/tarbarimgs/list_selected.png",
+				"text":"菜单"
+			},
+			{
+				"pagePath":"pages/cart/cart",
+				"iconPath":"static/tarbarimgs/cart.png",
+				"selectedIconPath":"static/tarbarimgs/cart_selected.png",
+				"text":"购物车"
+			},
+			{
+				"pagePath":"pages/profile/profile",
+				"iconPath":"static/tarbarimgs/profile.png",
+				"selectedIconPath":"static/tarbarimgs/profile_selected.png",
+				"text":"我的"
+			}
+		]
+	}
+}
