@@ -1,5 +1,22 @@
 <template>
 	<view>
+		<!-- 自定义导航 -->
+		<view class="d-flex a-center" style="height: 90rpx;">
+			<!-- 左边 -->
+			<view style="width: 85rpx;" class="d-flex a-center j-center">
+				<text class="iconfont icon-xiaoxi"></text>
+			</view>
+			<!-- 中间 -->
+			<view class="flex-1 bg-light rounded d-flex a-center text-light-muted" style="height: 65rpx;" @click="openSearch">
+				<text class="iconfont icon-sousuo mx-2"></text>
+				智能积木
+			</view>
+			<!-- 右边 -->
+			<view style="width: 85rpx;" class="d-flex a-center j-center">
+				<text class="iconfont icon-richscan_icon"></text>
+			</view>
+		</view>
+		
 		<!--顶部选项卡-->
 		<scroll-view scroll-x class="border-bottom scroll-row"
 		style="height: 80rpx;" :scroll-into-view="scrollinto"
@@ -151,7 +168,6 @@
 				//初始化顶部的选项卡
 				//this.tabBars = demoTabBars
 				
-				this.
 				
 			},
 			changeTab(index) {
@@ -165,6 +181,15 @@
 			onChangeTab(e){
 				this.changeTab(e.detail.current)
 			},
+			// 点击主页搜索框 跳转到搜索页面
+			openSearch(){
+				uni.navigateTo({
+					url: '../search/search',
+				});
+			},
+			addData() {
+				let index = this.tabIndex;
+			}
 			
 		}
 	}
