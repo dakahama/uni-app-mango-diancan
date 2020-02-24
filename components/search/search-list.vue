@@ -11,7 +11,7 @@
 			</view>
 			<price>{{item.pprice}}</price>
 			<view class="font-sm text-light-muted">
-				{{item.comment_num}} 条评论  {{item.good_num}}满意
+				{{item.comment_num}}条评论 {{item.good_num}}满意
 			</view>
 		</view>
 	</view>

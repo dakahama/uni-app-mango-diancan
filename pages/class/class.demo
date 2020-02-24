@@ -1,9 +1,6 @@
 <template>
 	<view class="d-flex border-top border-light-secondary" 
 	style="height: 100%; box-sizing: border-box;">
-	
-		<loading :show="showLoading"></loading>
-		
 		<scroll-view id="leftScroll" scroll-y="true" style="flex: 1;height: 100%;"
 		class="border-right  border-light-secondary"
 		:scroll-top="leftScrollTop">
@@ -39,7 +36,6 @@
 		},
 		data() {
 			return {
-				showLoading:true,
 				activeIndex:0,
 				cate:[],
 				list:[],
@@ -52,64 +48,56 @@
 			}
 		},
 		watch: {
-			async activeIndex(newValue,oldValue) {
+			activeIndex(newValue,oldValue) {
 				//console.log(newValue)
-				// 获取scroll-view高度，scrollTop
-				let data = await this.getElInfo({
+				//获取scroll-view高度，scrollTop
+				const query = uni.createSelectorQuery().in(this);
+				//let left = []
+				query.select('#leftScroll').fields({
 					size:true,
 					scrollOffset:true
-				})
-				let H = data.height
-				let ST = data.scrollTop
-				// 下边
-				if ((this.leftDomsTop[newValue]+this.cateItemHeight) > (H+ST) ) {
-					return this.leftScrollTop = this.leftDomsTop[newValue]+this.cateItemHeight - H
-				}
-				// 上边
-				if (ST > this.cateItemHeight) {
-					this.leftScrollTop = this.leftDomsTop[newValue]
-				}
+				},data => {
+					let H = data.height
+					let ST = data.scrollTop
+					if ((this.leftDomsTop[newValue]+this.cateItemHeight) >(H+ST)){
+						return this.leftScrollTop = this.leftDomsTop[newValue]+this.cateItemHeight - H
+					}
+					// 上边
+					if (ST > this.cateItemHeight) {
+						this.leftScrollTop = this.leftDomsTop[newValue]
+					}
+					 
+				}).exec();
 			}
 		},
 		onLoad() {
 			this.getData()
 		},
 		onReady() {
-			this.getElInfo({
-				all:'left',
+			const query = uni.createSelectorQuery().in(this);
+			//let left = []
+			query.selectAll('.left-scroll-item').fields({
 				size:true,
 				rect:true
-			}).then(data =>{
-				this.leftDomsTop = data.map(v => {
-					this.cateItemHeight = v.height
-					return v.top
-				})
-			})
-			this.getElInfo({
-				all:'right',
-				size:false,
-				rect:true
-			}).then(data =>{
-				this.rightDomsTop = data.map(v => v.top)
-			})
+			},data => {
+			  //console.log("得到布局位置信息" + JSON.stringify(data));
+			  //console.log("节点离页面顶部的距离为" + data.top);
+			  /*
+			  left = data.map(v=>{
+				  return v.top
+			  })
+			  console.log(left)
+			  */
+			  this.leftDomsTop = data.map(v => {
+				  this.cateItemHeight = v.height
+				  return v.top
+			  })
+			}).exec();
+			query.selectAll('.right-scroll-item').boundingClientRect(data => {
+			  this.rightDomsTop = data.map(v => v.top)
+			}).exec();
 		},
 		methods:{
-			//获取节点信息的方法
-			getElInfo(obj = {}) {
-				return new Promise((res,rej)=>{
-					let option = {
-						size:obj.size ? true : false,
-						rect:obj.rect ? true : false,
-						scrollOffset:obj.scrollOffset ? true : false,
-					}
-					const query = uni.createSelectorQuery().in(this);
-					let q = obj.all ? query.selectAll(`.${obj.all}-scroll-item`):query.select('#leftScroll')
-					q.fields(option,data => {
-						res(data)
-					}).exec();
-				})
-			}
-			,
 			changeIndex(index) {
 				this.activeIndex = index
 				//右边scroll-view滚动到对应分类
@@ -132,9 +120,6 @@
 						})
 					}
 				}
-				this.$nextTick( () => {
-					this.showLoading = false
-				})
 			},
 			// 监听右边滚动事件
 			async onRightSroll(e) {
