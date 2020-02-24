@@ -112,8 +112,24 @@
 					}
 				}
 			}
-		}
-	],
+		},
+		{
+            "path" : "pages/detail/detail",
+            "style" : {
+				"app-plus": {
+					"scrollIndicator":"none",
+					"bounce":"none",
+					"titleNView":{
+						"type":"transparent"
+					}
+				}
+			}
+        }
+        ,{
+            "path" : "pages/detail-comments/detail-comments",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "芒果点餐",

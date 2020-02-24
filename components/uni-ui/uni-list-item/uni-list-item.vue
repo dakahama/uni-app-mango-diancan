@@ -14,7 +14,8 @@
 				<view v-if="note" class="uni-list-item__content-note">{{ note }}</view>
 				<slot></slot>
 			</view>
-			<view v-if="showBadge || showArrow || showSwitch" class="uni-list-item__extra" :style="'width:'+extraWidth+';'">
+			<view v-if="showBadge || showArrow || showSwitch" class="uni-list-item__extra" 
+			:style="'width:'+extraWidth+';'">
 				<slot name="rightContent"></slot>
 				<slot name="right">
 				<uni-badge v-if="showBadge" :type="badgeType" :text="badgeText" />
@@ -140,7 +141,7 @@
 	}
 
 	.uni-list-item--hover {
-		background-color: #f4f4f4
+		background-color: #F4F4F4
 	}
 
 	.uni-list-item__container {

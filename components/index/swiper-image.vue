@@ -3,13 +3,14 @@
 		<!--轮播图组件-->
 		<!-- 图片格式 750:350-->
 		<swiper :indicator-dots="true" :autoplay="true" :circular="true"
-		:interval="3000" :duration="1000">
+		:interval="3000" :duration="1000"
+		:style="getStyle">
 			<block v-for="(item,index) in resdata" :key="index">
-				<swiper-item @tap="event(item)">
+				<swiper-item @tap="event(item,index)">
 					<view class="swiper-box">
 						<image :src="item.src" 
 						lazy-load
-						style="height: 350upx;"
+						:style="getStyle"
 						mode="scaleToFill"></image>
 					</view>
 				</swiper-item>
@@ -22,10 +23,33 @@
 <script>
 	export default {
 		props: {
-			resdata: Array
+			resdata: Array,
+			height:{
+				type:Number,
+				default:350
+			},
+			preview:{
+				type:Boolean,
+				default:false
+			}
+		},
+		computed:{
+			getStyle() {
+				return `height: ${this.height}rpx`
+			},
+			getUrls() {
+				return this.resdata.map( v => v.src)
+			}
 		},
 		methods: {
-			event(item){
+			event(item,index){
+				if(this.preview){
+					return uni.previewImage({
+						current:index,
+						urls:this.getUrls,
+						indicator:"default"
+					})
+				}
 				console.log('点击了轮播图'+item.index)
 			}
 		}

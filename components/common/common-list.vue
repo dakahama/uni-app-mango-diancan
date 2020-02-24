@@ -1,6 +1,6 @@
 <template>
 	<!-- 372.5 5 372.5-->
-	<view style="width: 372.5upx;"
+	<view style="width: 372.5upx;" @click="openDetail"
 	:style="index%2 === 0 ? 'border-right: 7upx solid #F5F5F5;':''">
 		<image :src="item.cover" mode="widthFix" lazy-load></image>
 		<view class="p-1 pt-1">
@@ -17,11 +17,15 @@
 <script>
 	export default{
 		props:{
-			index: Number,
+			index: [Number,String],
 			item:  Object
 		},
 		methods: {
-			
+			openDetail() {
+				uni.navigateTo({
+					url:'/pages/detail/detail'
+				})
+			}
 		}
 	}
 </script>
