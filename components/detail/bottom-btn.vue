@@ -3,11 +3,13 @@
 		<view style="height: 100rpx;"></view>
 		<view class="d-flex a-stretch bg-white position-fixed left-0 bottom-0 right-0"
 		style="height: 100rpx; z-index: 100;">
-			<view class="flex-1 d-flex flex-column a-center j-center line-h-md" hover-class="bg-light-secondary">
+			<view class="flex-1 d-flex flex-column a-center j-center line-h-md" 
+			hover-class="bg-light-secondary">
 				<view class="iconfont icon-xihuan text-muted line-h-md"></view>
 				收藏
 			</view>
-			<view class="flex-1 d-flex flex-column a-center j-center line-h-md position-relative" hover-class="bg-light-secondary" @tap="ToCart">
+			<view class="flex-1 d-flex flex-column a-center j-center line-h-md position-relative"
+			hover-class="bg-light-secondary" @tap="ToCart">
 				<view class="iconfont icon-gouwuche text-muted line-h-md"></view>
 				<view class="position-absolute" style="left: 100rpx;top: 0;"
 				v-if="cartCount === '99+' || cartCount > 0">

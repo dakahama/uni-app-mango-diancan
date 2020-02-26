@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "菜单",
+  "bounce": "none",
+  "usingComponents": {
+    "loading": "/components/common/loading"
+  }
+}

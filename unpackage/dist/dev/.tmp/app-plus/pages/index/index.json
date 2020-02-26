@@ -1,0 +1,38 @@
+{
+  "scrollIndicator": "none",
+  "titleNView": {
+    "searchInput": {
+      "align": "left",
+      "backgroundColor": "#F7F7F7",
+      "borderRadius": "4px",
+      "disabled": true,
+      "placeholder": "在此处搜索您想要的菜品",
+      "placeholderColor": "#CCCCCC"
+    },
+    "buttons": [
+      {
+        "color": "#989898",
+        "colorPressed": "#FD6801",
+        "float": "left",
+        "fontSize": "22px",
+        "fontSrc": "/static/font/iconfont.ttf",
+        "text": ""
+      },
+      {
+        "color": "#989898",
+        "colorPressed": "#FD6801",
+        "float": "right",
+        "fontSize": "22px",
+        "fontSrc": "/static/font/iconfont.ttf",
+        "text": ""
+      }
+    ]
+  },
+  "usingComponents": {
+    "divider": "/components/common/divider",
+    "common-list": "/components/common/common-list",
+    "swiper-image": "/components/index/swiper-image",
+    "index-nav": "/components/index/index-nav",
+    "three-adv": "/components/index/three-adv"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/class/class",
+    "pages/cart/cart",
+    "pages/profile/profile",
+    "pages/search/search",
+    "pages/search/search-list",
+    "pages/detail/detail",
+    "pages/detail-comments/detail-comments"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "芒果点餐",
+    "navigationBarBackgroundColor": "#F1F1F1",
+    "backgroundColor": "#F1F1F1"
+  },
+  "tabBar": {
+    "color": "#B1B1B1",
+    "selectedColor": "#FD6801",
+    "borderStyle": "black",
+    "backgroundColor": "#FFFFFF",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/tarbarimgs/index.png",
+        "selectedIconPath": "static/tarbarimgs/index_selected.png",
+        "text": "主页"
+      },
+      {
+        "pagePath": "pages/class/class",
+        "iconPath": "static/tarbarimgs/list.png",
+        "selectedIconPath": "static/tarbarimgs/list_selected.png",
+        "text": "菜单"
+      },
+      {
+        "pagePath": "pages/cart/cart",
+        "iconPath": "static/tarbarimgs/cart.png",
+        "selectedIconPath": "static/tarbarimgs/cart_selected.png",
+        "text": "购物车"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "iconPath": "static/tarbarimgs/profile.png",
+        "selectedIconPath": "static/tarbarimgs/profile_selected.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "nvueCompiler": "weex",
+  "renderer": "auto",
+  "splashscreen": {
+    "alwaysShowBeforeRender": true,
+    "autoclose": false
+  },
+  "appname": "芒果点餐",
+  "compilerVersion": "2.6.0",
+  "usingComponents": {
+    "divider": "/components/common/divider",
+    "card": "/components/common/card",
+    "price": "/components/common/price",
+    "common-list": "/components/common/common-list",
+    "loading": "/components/common/loading"
+  }
+}

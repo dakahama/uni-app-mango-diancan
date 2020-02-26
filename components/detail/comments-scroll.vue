@@ -4,7 +4,7 @@
 			
 			<view class="scroll-row-item rounded bg-light-secondary mr-2 p-2" 
 			v-for="(item,index) in comments" :key="index"
-			style="width: 620rpx;height: 380rpx;">
+			style="width: 600rpx;height: 380rpx;">
 				
 				<view class="d-flex a-center mb-1">
 					<image :src="item.userpic" 
@@ -18,9 +18,9 @@
 					<view class="iconfont icon-dianzan text-light-muted font pl-1 ml-auto">{{item.goodNum}}</view>
 				</view>
 				
-				<view class="d-block font-md mb-3 fload">
-					{{item.context}}
-				</view>
+				<text class="d-block font text-light-muted"
+				style="width: 70upx;">{{item.context}}</text>
+				
 				
 				<scroll-view scroll-x class="scroll-row">
 					<block v-for="(item2,index2) in item.imgList" :key="index2">
@@ -77,14 +77,11 @@
 </script>
 
 <style>
-.fload{
-		width:600upx;
-		height: 60upx;
-		display: -webkit-box;
-		word-break: break-all;
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 1;
-		overflow: hidden;
-		text-overflow: ellipsis;
+.fload {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 </style>

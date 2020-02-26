@@ -1,0 +1,1 @@
+<view class="{{['_popup data-v-e9c88b56',popupClass]}}"><view data-event-opts="{{[['tap',[['$emit',['hide']]]]]}}" class="_mask data-v-e9c88b56" catchtap="__e"></view><view class="_body data-v-e9c88b56"><slot></slot></view></view>

@@ -58,11 +58,38 @@
 									</block>
 								</view>	
 							</template>
+							
+							
 						</block>
+						<view class="" style="height: 500rpx;"></view>
 					</template>
 				</scroll-view>
 			</swiper-item>
 		</swiper>
+		
+		
+		<!-- 服务说明 -->
+		<!--
+		<common-popup :popupClass="none" @hide="hide('service')">
+			<view class="d-flex a-center j-center font-md border-bottom border-light-secondary" style="height: 100rpx;">
+				服务说明
+			</view>
+			<scroll-view scroll-y class="w-100" style="height: 835rpx;">
+				<view class="py-1">
+					<view class="d-flex a-center">
+						<view class="iconfont icon-finish main-text-color mr-1"></view>
+						小米自营
+					</view>
+					<text class="text-light-muted font pl-4">
+						不管满多少，就是不包邮
+					</text>
+				</view>
+			</scroll-view>
+			 <view class="main-bg-color text-white font-md d-flex a-center j-center" hover-class="main-bg-hover-color" style="height: 100rpx;margin-left: -30rpx;margin-right: -30rpx;" @tap.stop="hide('service')">
+			 	确定
+			 </view>
+		</common-popup>
+		-->
 	</view>
 </template>
 
