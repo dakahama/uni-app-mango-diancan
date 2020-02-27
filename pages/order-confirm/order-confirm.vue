@@ -175,7 +175,7 @@
 		methods: {
 			openPathList(){
 				uni.navigateTo({
-					url: '../user-path-list/user-path-list?type=choose'
+					url: '../user-address/user-address?type=choose'
 				});
 			},
 			openOrderInvoice(){

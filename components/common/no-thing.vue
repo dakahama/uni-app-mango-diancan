@@ -11,11 +11,11 @@
 		props: {
 			icon: {
 				type: String,
-				default: "no_comment"
+				default: "no_pay"
 			},
 			msg:{
 				type:String,
-				default:"您还没有待付款订单"
+				default:"你还没有订单"
 			}
 		},
 		computed: {

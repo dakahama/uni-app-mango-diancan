@@ -1,8 +1,11 @@
 <template>
 	<view>
 		<view class="position-relative d-flex a-center" style="height: 320rpx;">
-			<view class="iconfont icon-xiaoxi position-absolute text-white"
-			style="font-size: 50rpx;top: 75rpx;right: 20rpx;z-index: 100;"></view>
+			<!-- 点击打开消息列表 -->
+			<navigator url="../msg-list/msg-list">
+				<view class="iconfont icon-xiaoxi position-absolute text-white"
+				style="font-size: 50rpx;top: 75rpx;right: 20rpx;z-index: 100;"></view>
+			</navigator>
 			<image src="../../static/bg.jpg" mode="widthFix" 
 			style="height: 320rpx;"></image>
 			<view class="d-flex a-center position-absolute left-0 right-0"
@@ -11,18 +14,20 @@
 				style="width: 145rpx;height: 145rpx;border: 5rpx solid;" 
 				class="rounded-circle border-light ml-4"></image>
 				<view class="ml-2 text-white font-md">昵称</view>
+				<!--
 				<view class="d-flex a-center j-center a-self-end ml-auto pl-1 pr-1"
 				style="height: 70rpx;background: #F0AD4E;color: #CC4A00;
 				border-top-left-radius: 40rpx;border-bottom-left-radius: 40rpx;">
 					<view class="line-h iconfont icon-huangguan mr-1"></view>
 					会员积分 1.99333
 				</view>
+				-->
 			</view>
 		</view>
 		<card >
 			<view slot="title" class="d-flex a-center j-sb w-100">
 				<text class="font-md font-weight">我的订单</text>
-				<view class="text-secondary ml-auto font">
+				<view class="text-secondary ml-auto font" @click="navigate('order')">
 					全部订单 <text class="iconfont icon-you font"></text>
 				</view>
 			</view>

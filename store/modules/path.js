@@ -1,6 +1,14 @@
 export default {
 	state:{
-		list:[],
+		list:[
+			{
+				name:"wac",
+				phone:"12233333234",
+				path:"guangdong",
+				detailPath:"xxxx街道",
+				isdefault:true
+			}
+		],
 	},
 	getters:{
 		// 获取默认地址

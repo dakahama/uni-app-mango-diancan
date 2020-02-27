@@ -21,39 +21,20 @@
 						<order-list :item="item" :index="index" @update="getOrderList"></order-list>
 					</block>
 				</template>
-				<!-- 默认无 -->
+				<!-- 默认无订单时的状态 -->
 				<template v-else>
 					<no-thing :icon="tab.no_thing" :msg="tab.msg"></no-thing>
 				</template>
 			</view>
 		</block>
-		
-
-
-		<view class="text-center main-text-color font-md font-weight mt-5">
-			为你推荐
-		</view>
-		<view class="position-relative d-flex a-center j-center text-secondary mb-3 pt-3">
-			<view style="background: #F5F5F5;z-index: 2;" class="px-2 position-absolute">
-				买的人还买了</view>
-			<view class="position-absolute" style="height: 1upx;left: 0;right: 0;background-color: #DDDDDD;"></view>
-		</view>
-		<!-- 为你推荐 -->
-		<view class="row j-sb bg-white">
-			<common-list v-for="(item,index) in hotList" :key="index" :item="item" :index="index">
-			</common-list>
-		</view>
-
 	</view>
 </template>
 
 <script>
-	import commonList from "@/components/common/common-list.vue"
 	import noThing from "@/components/common/no-thing.vue"
 	import orderList from "@/components/order/order-list.vue"
 	export default {
 		components:{
-			commonList,
 			noThing,
 			orderList
 		},
@@ -90,7 +71,6 @@
 						list:[]
 					}
 				],
-				hotList: []
 			}
 		},
 		onLoad(e) {
@@ -138,21 +118,6 @@
 							status:this.$U.formatStatus(item),
 							order_items:order_items,
 							total_price:item.total_price
-						}
-					})
-				})
-			},
-			getHotList(){
-				// 获取热门推荐
-				this.$H.get('/goods/hotlist').then(res=>{
-					this.hotList = res.map(v=>{
-						return {
-						  id:v.id,
-						  cover:v.cover,
-						  title:v.title,
-						  desc:v.desc,
-						  oprice:v.min_oprice,
-						  pprice:v.min_price
 						}
 					})
 				})

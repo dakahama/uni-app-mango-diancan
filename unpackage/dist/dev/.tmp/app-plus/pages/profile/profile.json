@@ -1,4 +1,9 @@
 {
-  "navigationBarTitleText": "我的",
-  "usingComponents": {}
+  "titleNView": false,
+  "bounce": "none",
+  "usingComponents": {
+    "card": "/components/common/card",
+    "divider": "/components/common/divider",
+    "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item"
+  }
 }

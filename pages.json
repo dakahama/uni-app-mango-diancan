@@ -180,8 +180,108 @@
 				"navigationBarTitleText":"编辑收货地址",
 				"app-plus":{
 					"scrollIndicator":"none",
-					"bounce":"none",
+					"bounce":"none"
 				}
+			}
+        },
+		{
+            "path" : "pages/order/order",
+            "style" : {
+				"navigationBarTitleText":"我的订单",
+				"app-plus":{
+					"scrollIndicator":"none",
+					"bounce":"none"
+				}
+			}
+        }
+        ,{
+            "path" : "pages/order-confirm/order-confirm",
+            "style" : {
+				"navigationBarTitleText":"订单配送至",
+				"navigationBarBackgroundColor":"#FD6801",
+				"navigationBarTextStyle":"white"
+			}
+        }
+        ,{
+            "path" : "pages/order-invoice/order-invoice",
+            "style" : {
+				"navigationBarTitleText":"发票"
+			}
+        }
+        ,{
+            "path" : "pages/login/login",
+            "style" : {
+				"app-plus":{
+					"bounce":"none",
+					"scrollIndicator":"none",
+					"titleNView":false
+				}
+			}
+        }
+        ,{
+            "path" : "pages/msg-list/msg-list",
+            "style" : {
+				"navigationBarTitleText":"消息列表"
+			}
+        }
+        ,{
+            "path" : "pages/msg-detail/msg-detail",
+            "style" : {
+				"navigationBarTitleText":"消息详情页"
+			}
+        }
+        ,{
+            "path" : "pages/pay-methods/pay-methods",
+            "style" : {
+				"navigationBarTitleText":"选择支付方式"
+			}
+        }
+        ,{
+            "path" : "pages/pay-result/pay-result",
+            "style" : {
+				"navigationBarTitleText":"支付成功"
+			}
+        }
+        ,{
+            "path" : "pages/order-coupon/order-coupon",
+            "style" : {
+				"navigationBarTitleText":"优惠券"
+			}
+        }
+        ,{
+            "path" : "pages/order-detail/order-detail",
+            "style" : {
+				"app-plus":{
+					"bounce":"none",
+					"titleNView":{
+						"type":"transparent"
+					}
+				}
+			}
+        }
+        ,{
+            "path" : "pages/after-sale/after-sale",
+            "style" : {
+				"navigationBarTitleText":"申请售后"
+			}
+        }
+        ,{
+            "path" : "pages/about/about",
+            "style" : {
+				"navigationBarTitleText":"关于xxx商城"
+			}
+        }
+        ,{
+            "path" : "pages/coupon/coupon",
+            "style" : {
+				"enablePullDownRefresh":true,
+				"navigationBarTitleText":"领取优惠券"
+			}
+        }
+        ,{
+            "path" : "pages/order-refund/order-refund",
+            "style" : {
+				"navigationBarTitleText":"申请退款"
 			}
         }
     ],

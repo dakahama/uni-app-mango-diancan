@@ -1,160 +1,245 @@
 <template>
-	<view style="background: #F5F5F5;">
-		<uniNavBar :right-text="isEdit?'完成':'编辑'" title="购物车" :statusBar="true" 
-		:shadow="false" :fixed="true"
-		@click-right="isEdit = !isEdit">
-		</uniNavBar>
-		
-		<!--购物车为空-->
-		<view class="py-5 d-flex a-center j-center bg-white border-bottom"
+	<view class="animated fadeIn faster" style="background: #F5F5F5;">
+
+		<loading-plus v-if="beforeReady"></loading-plus>
+
+
+		<uni-nav-bar :right-text="isedit?'完成':'编辑'" title="购物车" statusBar
+		 :shadow="false" @click-right="isedit = !isedit" :fixed="true"></uni-nav-bar>
+		 
+		 <!-- 购物车为空 -->
+		<view class="py-5 d-flex a-center j-center bg-white"
 		v-if="disableSelectAll">
-			<view class="iconfont icon-gouwuche text-light-muted"
-			style="font-size: 40upx;height: 200upx;">
-				<text class="text-light-muted mx-2">购物车还是为空</text>
+		 	<view class="iconfont icon-gouwuche text-light-muted" style="font-size: 50upx;"></view>
+			<text class="text-light-muted mx-2">购物车还是为空</text>
+			<view class="px-2 py-1 border border-light-secondary rounded"
+			hover-class="bg-light-secondary">
+				去逛逛
 			</view>
-		</view>
-		
-		
-		<!--购物车商品列表-->
-		<view class="bg-white px-2"
-		v-else-if="!disableSelectAll">
-			<view class="d-flex py-3 a-center border-bottom border-light-secondary"
-			v-for="(item,index) in list" :key="index">	
-				<view class="d-flex a-center">
-					<label class="radio d-flex a-center j-center flex-shrink" 
-					style="width: 80upx;height: 80upx;" @click="selectItem(index)">
-						<radio :value="item.id" :checked="item.checked" color="#FD6801"/>
-					</label>
-					<image :src="item.cover" mode="widthFix"
-					style="width: 150upx;height: 150upx;"
-					class="border border-light-secondary rounded p-2 flex-shrink"></image>
-				</view>
+		 </view>
+		 
+		 <!-- 购物车商品列表 -->
+		 <view class="bg-white px-2" v-else>
+			 <!-- 列表 -->
+		 	<view class="d-flex a-center py-3 border-bottom border-light-secondary"
+			v-for="(item,index) in list" :key="index">
+		 		<label class="radio d-flex a-center j-center flex-shrink" 
+				style="width: 80upx;height: 80upx;" @click="selectItem(index)">
+		 			<radio :value="item.id" :checked="item.checked" 
+					color="#FD6801"/>
+		 		</label>
+				
+				<image :src="item.cover" 
+				mode="widthFix" style="height: 150rpx;width: 150rpx;"
+				class="border border-light-secondary rounded p-2 flex-shrink">
+				</image>
+				
 				<view class="flex-1 d-flex flex-column pl-2">
-					<view class="text-dark" style="font-size: 35upx;">{{item.title}}</view>
-					<!--规格属性-->
-					<view class="d-flex text-light-muted mb-1 p-1 mb-2"
-					:class="isEdit ? 'bg-light-secondary':''"
-					@tap="isEdit ? doShowPopup(index):''">
-						<text class="mr-1"
-						v-for="(attr,attrIndex) in item.attrs" :key="attrIndex">
-						{{attr.list[attr.selected].name}}
-						</text>
-						<view v-if="isEdit" class="iconfont icon-bottom font ml-auto"></view>
+					<view class="text-dark" style="font-size: 35upx;">
+						{{item.title}}
+					</view>
+					<!-- 规格属性 -->
+					<view class="d-flex text-light-muted mb-1"
+					:class="isedit ? ' p-1 bg-light-secondary mb-2' : ''"
+					@tap.stop="showPopup(index,item)"
+					v-if="item.skus_type === 1">
+						{{item.skusText}}
+						<view class="iconfont icon-bottom font ml-auto"
+						v-if="isedit"></view>
 					</view>
 					<view class="mt-auto d-flex j-sb">
-						<price style="font-size: 35upx;">{{item.pprice}}</price>
+						<price>{{item.pprice}}</price>
 						<view class="a-self-end">
-							<uniNumberBox :min="item.minnum" :value="item.num" :max="item.maxnum"
+							<uni-number-box :min="item.minnum" 
+							:value="item.num" :max="item.maxnum"
 							@change="changeNum($event,item,index)">
-							</uniNumberBox>
+							</uni-number-box>
 						</view>
 					</view>
 				</view>
-			</view>
-		</view>
-		
-		<view class="" style="height: 100upx;"></view>
-		<!-- 合计 -->
-		<view class="d-flex a-center position-fixed left-0 right-0 bottom-0 border-top border-light-secondary a-stretch bg-white"
-		style="height: 100upx;z-index: 1000;">
-			<label class="radio d-flex a-center j-center flex-shrink"
-			style="width: 120upx;" @click="doSelectAll">
-				<radio color="#FD6801" :checked="checkedAll" 
-				:disabled="disableSelectAll"/>
-			</label>
-			<template v-if="!isEdit">
-				<view class="flex-1 d-flex a-center j-center font-md">
-					 合计 <price>{{totalPrice}}</price>
-				</view>
-				<view class="flex-1 d-flex a-center j-center main-bg-color 
-				text-white font-md" 
-				hover-class="main-bg-hover-color" @tap="orderConfirm"> 
-				结算</view>
-			</template>
-			<template v-else>
-				<view class="flex-1 d-flex a-center j-center bg-danger 
-				text-white font-md" hover-class="main-bg-hover-color" 
-				@tap="doDelGoods">删除</view>
-			</template>
-		</view>	
-			
-		<commonPopup :popupClass="popupShow" @hide="doHidePopup">
-			<view class="d-flex a-center"
-			style="height: 275rpx;">
-				<image :src="popupData.cover" mode="widthFix"
-				style="height: 180rpx;width: 180rpx;"
-				class="border rounded"></image>
-				<view class="pl-2">
-					<price priceSize="font-lg" unitSize="font">{{popupData.pprice}}</price>
-					<text class="mr-1"
-					v-for="(attr,attrIndex) in popupData.attrs" :key="attrIndex">
-					{{attr.list[attr.selected].name}}
-					</text>
-				</view>
-			</view>
-			<scroll-view scroll-y class="w-100" style="height: 660rpx;">
-				<card :headTitle="item.title" :headTitleWeight="false" :headBorderBottom="false"
-				v-for="(item,index) in popupData.attrs" :key="index">
-					<wacradioGroup :label="item"
-					:selected.sync='item.selected'></wacradioGroup>
-				</card>
-				<view class="d-flex j-sb a-center p-2 border-top border-light-secondary">
-					<text>购买数量</text>
-					<uni-number-box :min="popupData.minnum" :max="popupData.maxnum"
-					:value="popupData.num" @change="popupData.num = $event"></uni-number-box>
-				</view>
-			</scroll-view>
-			<view class="text-white font-md d-flex a-center j-center main-bg-hover-color" 
-			style="height: 100rpx;margin-left: -30rpx;margin-right: -30rpx;"  
-			@tap.stop="doHidePopup">确定</view>
-		</commonPopup>	
+				
+		 	</view>
+		 </view>
+		 
+		 <!-- 占位 -->
+		 <view style="height: 100upx;"></view>
+		 <!-- 合计 -->
+		 <view class="d-flex a-center position-fixed left-0 right-0 bottom-0 border-top border-light-secondary a-stretch bg-white" style="height: 100upx;z-index: 1000;">
+			 <label class="radio d-flex a-center j-center flex-shrink"
+			 style="width: 120upx;" @click="doSelectAll">
+			 	<radio color="#FD6801" :checked="checkedAll" :disabled="disableSelectAll"/>
+			 </label>
+			 <template v-if="!isedit">
+			 	<view class="flex-1 d-flex a-center j-center font-md">
+			 		合计 <price>{{totalPrice}}</price>
+			 	</view>
+			 	<view class="flex-1 d-flex a-center j-center main-bg-color text-white font-md" hover-class="main-bg-hover-color" @tap="orderConfirm"> 结算</view>
+			 </template>
+			 <template v-else>
+			 	<view class="flex-1 d-flex a-center j-center font-md main-bg-color text-white">
+			 		移入收藏
+			 	</view>
+			 	<view class="flex-1 d-flex a-center j-center bg-danger text-white font-md" hover-class="main-bg-hover-color" @tap="doDelGoods">删除</view>
+			 </template>
+		 </view>
+		 
+		 <!-- 属性筛选框 -->
+		<sku-popup></sku-popup>
+		 
+		 
 	</view>
 </template>
 
 <script>
-	import uniNavBar from '@/components/uni-ui/uni-nav-bar/uni-nav-bar.vue';
-	import uniNumberBox from '@/components/uni-ui/uni-number-box/uni-number-box.vue'
+	import loading from "@/common/mixin/loading.js"
+	import uniNavBar from "@/components/uni-ui/uni-nav-bar/uni-nav-bar.vue"
+	import uniNumberBox from "@/components/uni-ui/uni-number-box/uni-number-box.vue"
+	import {mapState,mapGetters,mapActions,mapMutations} from "vuex"
+	import commonList from "@/components/common/common-list.vue"
+	import skuPopup from '@/components/cart/sku-popup.vue';
 	
-	import commonPopup from '@/components/common/common-popup.vue'
-	import wacradioGroup from '@/components/common/radio-group.vue'
-	import {mapState,mapGetters,mapMutations,mapActions} from 'vuex'
-	export default{
-		components:{
-			uniNavBar,uniNumberBox,commonPopup,wacradioGroup
+	export default {
+		mixins:[loading],
+		components: {
+			uniNavBar,
+			uniNumberBox,
+			commonList,
+			skuPopup
 		},
-		computed:{
+		data() {
+			return {
+				isedit: false,
+				hotList:[]
+			}
+		},
+		computed: {
 			...mapState({
 				list:state=>state.cart.list,
-				popupShow:state=>state.cart.popupShow
+				selectedList:state=>state.cart.selectedList
 			}),
 			...mapGetters([
 				'checkedAll',
 				'totalPrice',
-				'disableSelectAll',
-				'popupData'
+				'disableSelectAll'
 			])
 		},
-		data() {
-			return {
-				isEdit:false
-			}
+		onLoad() {
+			this.getData()
+		},
+		beforeDestroy() {
+			uni.$off('updateCart')
+		},
+		onPullDownRefresh() {
+			this.getData()
 		},
 		methods:{
-			...mapMutations([
-				'selectItem'
-			]),
 			...mapActions([
 				'doSelectAll',
 				'doDelGoods',
 				'doShowPopup',
-				'doHidePopup'
+				'updateCartList'
+			]),
+			...mapMutations([
+				'selectItem',
+				'initCartList',
+				'unSelectAll'
 			]),
 			changeNum(e,item,index){
-				item.num = e
+				if (item.num === e) return;
+				uni.showLoading({
+					title:"加载中..."
+				})
+				this.$H.post('/cart/updatenumber/'+item.id,{
+					num:e
+				},{
+					token:true
+				}).then(res=>{
+					console.log(res);
+					item.num = e
+					uni.hideLoading()
+				})
+			},
+			// 订单结算
+			orderConfirm(){
+				if(this.selectedList.length === 0){
+					return uni.showToast({
+						title: '请选择要结算的商品',
+						icon: 'none'
+					});
+				}
+				uni.navigateTo({
+					url: '../order-confirm/order-confirm?detail='+JSON.stringify(this.selectedList)
+				});
+			},
+			showPopup(index,item){
+				if(!this.isedit){
+					return;
+				}
+				this.$H.get('/cart/'+item.id+'/sku',{},{
+					token:true
+				}).then(res=>{
+					
+					// 商品规格（选项部分）
+					let check = item.skusText.split(',')
+					res.selects = res.goods_skus_card.map((v,i)=>{
+					  let selected = 0
+					  let list = v.goods_skus_card_value.map((v1,i1)=>{
+						  if(check[i] === v1.value){
+							  selected = i1
+						  }
+						  return {
+							  id:v1.id,
+							  name:v1.value
+						  }
+					  })
+					  return {
+						id:v.id,
+						title:v.name,
+						selected,
+						list:list
+					  }
+					})
+					// 商品规格（匹配价格）
+					res.goods_skus.forEach(item=>{
+					  let arr = []
+					  for (let key in item.skus) {
+						arr.push(item.skus[key].value)
+					  }
+					  item.skusText = arr.join(',')
+					})
+					
+					this.doShowPopup({
+						index:index,
+						data:res
+					})
+				})
+			},
+			// 获取数据
+			getData(){
+				// 获取购物车数据
+				this.updateCartList().then(res=>{
+					uni.stopPullDownRefresh()
+				}).catch(err=>{
+					uni.stopPullDownRefresh()
+				})
+				// 获取热门推荐
+				this.$H.get('/goods/hotlist').then(res=>{
+					this.hotList = res.map(v=>{
+						return {
+						  id:v.id,
+						  cover:v.cover,
+						  title:v.title,
+						  desc:v.desc,
+						  oprice:v.min_oprice,
+						  pprice:v.min_price
+						}
+					})
+				})
 			}
 		}
 	}
 </script>
 
 <style>
+
 </style>
