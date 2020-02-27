@@ -105,7 +105,7 @@
 </template>
 
 <script>
-	import {mapMutations} from 'vuex'
+	import {mapState,mapMutations} from 'vuex'
 	import swiperImage from "@/components/index/swiper-image.vue"
 	import baseInfo from "@/components/detail/base-info.vue"
 	import uniListItem from '@/components/uni-ui/uni-list-item/uni-list-item.vue'
@@ -206,6 +206,12 @@
 				content:"<h1>hahaha</h1>"
 			}
 		},
+		computed:{
+			...mapState({
+				pathList:state=>state.path.list
+			})
+			
+		},
 		// 监听页面返回事件
 		onBackPress() {
 			//关闭模态框
@@ -251,8 +257,11 @@
 					this.popup[key] = 'none'
 				},200)
 			},
-			maxStock(){
-				
+			openCreatePath(){
+				uni.navigateTo({
+					url: '../user-address-edit/user-address-edit',
+				});
+				this.hide('attr')
 			}
 		}
 	}

@@ -60,7 +60,10 @@
 		{
 			"path":"pages/profile/profile",
 			"style": {
-				"navigationBarTitleText": "我的"
+				"app-plus":{
+					"titleNView":false,
+					"bounce":"none"
+				}
 			}
 		},
 		{
@@ -136,6 +139,50 @@
         ,{
             "path" : "pages/cart/cart",
             "style" : {}
+        }
+        ,{
+            "path" : "pages/user-set/user-set",
+            "style" : {
+				"navigationBarTitleText":"用户设置"
+			}
+        }
+        ,{
+            "path" : "pages/user-info/user-info",
+            "style" : {
+				"navigationBarTitleText":"个人资料"
+			}
+        }
+        ,{
+            "path" : "pages/user-address/user-address",
+            "style" : {
+				"navigationBarTitleText":"收货地址",
+				"app-plus":{
+					"scrollIndicator":"none",
+					"bounce":"none",
+					"titleNView":{
+						"buttons":[
+							{
+								"float":"right",
+								"color":"#999999",
+								"colorPressed":"#BBBBBB",
+								"fontSrc":"/static/font/iconfont.ttf",
+								"text":"\ue626",
+								"fontSize":"15px"
+							}
+						]
+					}
+				}
+			}
+        }
+        ,{
+            "path" : "pages/user-address-edit/user-address-edit",
+            "style" : {
+				"navigationBarTitleText":"编辑收货地址",
+				"app-plus":{
+					"scrollIndicator":"none",
+					"bounce":"none",
+				}
+			}
         }
     ],
 	"globalStyle": {
