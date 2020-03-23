@@ -1,7 +1,6 @@
 <template>
 	<view class="p-2">
-		<scroll-view scroll-x class="scroll-row">
-			
+		<scroll-view scroll-x class="scroll-row" style="word-break: break-all;">
 			<view class="scroll-row-item rounded bg-light-secondary mr-2 p-2" 
 			v-for="(item,index) in comments" :key="index"
 			style="width: 600rpx;height: 380rpx;">
@@ -15,12 +14,11 @@
 						{{item.username}}</text>
 						<text class="d-block font text-light-muted line-h">{{item.createTime | formatTime}}</text>
 					</view>
-					<view class="iconfont icon-dianzan text-light-muted font pl-1 ml-auto">{{item.goodNum}}</view>
 				</view>
 				
-				<text class="d-block font text-light-muted"
-				style="width: 70upx;">{{item.context}}</text>
-				
+				<view class="font mb-3 line-h-sm" style="white-space: normal">
+					{{item.context}}
+				</view>
 				
 				<scroll-view scroll-x class="scroll-row">
 					<block v-for="(item2,index2) in item.imgList" :key="index2">

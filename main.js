@@ -11,12 +11,34 @@ import price from "@/components/common/price.vue"
 import commonList from "@/components/common/common-list.vue"
 // 全局加载动画
 import loading from "@/components/common/loading.vue"
+
+import $H from "@/common/lib/request.js"
+Vue.prototype.$H = $H
+
+
+Vue.prototype.navigateTo = (options)=>{
+	if(!store.state.user.loginStatus){
+		uni.showToast({
+			title:'请先登录',
+			icon:'none'
+		})
+		return uni.navigateTo({
+			url:'/pages/login/login'
+		})
+	}
+	uni.navigateTo(options)
+	
+}
+
 Vue.component('divider',divider)
 Vue.component('card',card)
 Vue.component('price',price)
 Vue.component('commonList',commonList)
 Vue.component('loading',loading)
 App.mpType = 'app'
+
+
+
 
 const app = new Vue({
 	store,

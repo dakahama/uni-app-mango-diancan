@@ -3,7 +3,6 @@
     "price": "/components/common/price",
     "uni-nav-bar": "/components/uni-ui/uni-nav-bar/uni-nav-bar",
     "uni-number-box": "/components/uni-ui/uni-number-box/uni-number-box",
-    "common-list": "/components/common/common-list",
-    "sku-popup": "/components/cart/sku-popup"
+    "common-list": "/components/common/common-list"
   }
 }

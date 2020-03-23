@@ -1,17 +1,19 @@
 <template>
 	<view>
 		<block v-for="(item,index) in list" :key="index">
-			<uni-swipe-action :options="options" @click="bindClick($event,index)">
+			<uni-swipe-action :options="options" 
+			@click="bindClick($event,index)">
 			<uni-list-item @click="choose(item)">
 				<view class="text-secondary">
 					<view class="d-flex a-center">
 						<text class="main-text-color">{{item.name}}</text>
 						{{item.phone}}
+						
 						<text class="main-text-color"
-						v-if="index === 0 && last_used_time !== null">[默认]</text>
+						v-if="index === 0 && item.status === 1">[默认]</text>
 					</view>
-					<view>{{item.province}} {{item.city}} {{item.district}}</view>
 					<view>{{item.address}}</view>
+					<view>{{item.detail}}</view>
 				</view>
 			</uni-list-item>
 			</uni-swipe-action>
@@ -32,8 +34,10 @@
 	import noThing from '@/components/common/no-thing.vue';
 	import {mapState,mapMutations} from "vuex"
 	export default {
-		components:{
-			uniListItem,uniSwipeAction,noThing
+		components: {
+			uniListItem,
+			uniSwipeAction,
+			noThing
 		},
 		data() {
 			return {
@@ -54,32 +58,105 @@
 				page:1
 			}
 		},
-		computed:{
+		computed: {
 			...mapState({
-				list:state=>state.path.list
+				list:state=>state.path.list,
+				userInfo:state=>state.user.userInfo
 			}),
 		},
-		methods:{
+		// 监听导航栏按钮点击 新增
+		onNavigationBarButtonTap(e) {
+			if(e.index === 0){
+				uni.navigateTo({
+					url: '../user-address-edit/user-address-edit'
+				});
+			}
+		},
+		onLoad(e) {
+			if (e.type === 'choose') {
+				this.isChoose = true
+			}
+			this.getData()
+			
+			// 注册一个监听事件
+			uni.$on('updateUserPathList',()=>{
+				this.page = 1
+				this.getData()
+			})
+		},
+		onUnload() {
+			uni.$off('updateUserPathList')
+		},
+		// 下拉刷新
+		onPullDownRefresh() {
+			this.page = 1
+			this.getData(()=>{
+				uni.stopPullDownRefresh()
+			})
+		},
+		onReachBottom() {
+			// 是否已经处于加载状态
+			if (this.loadtext !== '上拉加载更多') return;
+			// 改变加载状态
+			this.loadtext = '加载中...'
+			this.page++
+			// 请求数据
+			this.getData()
+		},
+		methods: {
 			...mapMutations(['delPath','updatePathList']),
-			bindClick(value,i){
+			// 获取数据
+			getData(callback = false){
+				this.$H.get('/user/user/addresses/'+this.page+'/'+this.userInfo.id,{},{
+					token:true
+				}).then(res=>{
+					console.log(res)
+					let refresh = this.page === 1
+					this.updatePathList({
+						refresh:refresh,
+						list:res.list
+					})
+					this.loadtext = res.list.length < 10 ? '没有更多了' : '上拉加载更多'
+					// 下拉刷新
+					if (typeof callback === 'function') {
+						uni.showToast({
+							title: '刷新成功',
+							icon: 'none'
+						});
+						callback()
+					}
+				}).catch(err=>{
+					if (typeof callback === 'function') {
+						callback()
+					}
+					if (this.page > 1) {
+						// 页码回归上一页
+						this.page--
+						this.loadtext = '上拉加载更多'
+					}
+				})
+			},
+			bindClick(value,i) {
 				switch (value.index){
-					case 0:
-					let obj = {index:i,item:this.list[i]}
-					// 加上是否默认
-					obj.item.default = (i === 0 && obj.item.last_used_time !== null) ? 1 : 0;
+					case 0: // 修改
+					let obj = {
+						index:i,
+						item:this.list[i]
+					}
 					setTimeout(()=> {
 						uni.navigateTo({
 							url: '../user-address-edit/user-address-edit?data='+JSON.stringify(obj),
 						});
 					},50);
-					break;
-					case 1:
+						break;
+					
+					case 1: // 删除
 					uni.showModal({
-						content: '确定删除该收货地址吗？',
+						content: '要删除该收货地址吗？',
 						success: (res)=> {
 							if (res.confirm) {
 								
-								this.$H.del('/useraddresses/'+this.list[i].id,{},{
+								this.$H.del('/user/user/address/'+this.list[i].id,{},{
 									token:true
 								}).then(res=>{
 									this.delPath(i)
@@ -87,18 +164,23 @@
 										title: '删除成功'
 									});
 								})
+								
 							} 
 						}
 					});
-					break;
+						break;
 				}
-			}
-		},
-		onNavigationBarButtonTap(e){
-			if(e.index === 0) {
-				uni.navigateTo({
-					url: '../user-address-edit/user-address-edit'
-				})
+			},
+			// 选择收货地址
+			choose(item){
+				if (this.isChoose) {
+					// 通知订单提交页修改收货地址
+					uni.$emit('choosePath',item)
+					// 关闭当前页面
+					uni.navigateBack({
+						delta: 1
+					});
+				}
 			}
 		}
 	}

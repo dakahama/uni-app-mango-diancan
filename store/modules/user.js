@@ -14,14 +14,14 @@ export default {
 			if (userInfo) {
 				userInfo = JSON.parse(userInfo)
 				
-				state.userInfo = userInfo
+				state.userInfo = userInfo.user
 				state.token = userInfo.token
 				state.loginStatus = true
 			}
 		},
 		// 登录
 		login(state,userinfo){
-			state.userInfo = userinfo
+			state.userInfo = userinfo.user
 			state.loginStatus = true
 			state.token = userinfo.token
 			// 持久化存储
@@ -33,6 +33,7 @@ export default {
 			state.loginStatus = false
 			state.token = null
 			uni.removeStorageSync('userInfo')
+			
 		}
 	}
 }

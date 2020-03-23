@@ -10,10 +10,18 @@
 			style="height: 320rpx;"></image>
 			<view class="d-flex a-center position-absolute left-0 right-0"
 			style="bottom: 50rpx;">
-				<image src="../../static/userpic.png"
+				<image :src="userInfo.avatar ? userInfo.avatar : '../../static/userpic.png'"
 				style="width: 145rpx;height: 145rpx;border: 5rpx solid;" 
 				class="rounded-circle border-light ml-4"></image>
-				<view class="ml-2 text-white font-md">昵称</view>
+				
+				<view class="ml-2 text-white font-md" @click="navigate('user-info')" v-if="userInfo.username">
+				{{userInfo.username}}
+				</view>
+				<view class="ml-2 text-white font-md" v-else
+				@click="openLogin">登录/注册</view>
+				
+				
+				
 				<!--
 				<view class="d-flex a-center j-center a-self-end ml-auto pl-1 pr-1"
 				style="height: 70rpx;background: #F0AD4E;color: #CC4A00;
@@ -27,7 +35,7 @@
 		<card >
 			<view slot="title" class="d-flex a-center j-sb w-100">
 				<text class="font-md font-weight">我的订单</text>
-				<view class="text-secondary ml-auto font" @click="navigate('order')">
+				<view class="text-secondary ml-auto font" @click="navigate('order',true)">
 					全部订单 <text class="iconfont icon-you font"></text>
 				</view>
 			</view>
@@ -57,6 +65,7 @@
 
 <script>
 	import uniListItem from "@/components/uni-ui/uni-list-item/uni-list-item.vue"
+	import {mapMutations,mapState} from 'vuex';
 	export default {
 		components:{
 			uniListItem
@@ -83,13 +92,34 @@
 				]
 			}
 		},
+		computed:{
+			...mapState({
+				userInfo:state=>state.user.userInfo,
+				loginStatus:state=>state.user.loginStatus
+			})
+		},
 		methods: {
-			navigate(path){
+			navigate(path,check = false){
 				if(!path) return;
+				
+				if(check){
+					return this.navigateTo({
+						url:`/pages/${path}/${path}`
+					})
+				}
 				uni.navigateTo({
 					url:`/pages/${path}/${path}`
 				})
+			},
+			openLogin(){
+				if(!this.loginStatus){
+					uni.navigateTo({
+						url:'../login/login'
+					})
+				}
+				
 			}
+				
 		}
 	}
 </script>

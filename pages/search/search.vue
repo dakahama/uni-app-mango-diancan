@@ -6,7 +6,7 @@
 			<!-- 中间 -->
 			<input type="text" v-model="keyword" 
 			class="flex-1 bg-light rounded ml-3 px-2"
-			style="height: 65rpx;" placeholder="智能积木"/>
+			style="height: 65rpx;" placeholder="请输入搜索关键词"/>
 			<!-- 右边 -->
 			<view style="width: 85rpx;" class="d-flex a-center j-center"
 			@click="search">
@@ -15,10 +15,14 @@
 		</view>
 		<!-- #endif -->
 		
+		<!--
 		<card headTitle="热门搜索" 
 		bodyCover="../../static/images/demo/search-banner.png"></card>
+		-->
+		
+		<card headTitle="热门搜索"></card>
 		<!-- 多色按钮 -->
-		<view class="px-1 mb-2">
+		<view class="px-1 mb-2 mt-2">
 			<color-tag v-for="(item,index) in hot" :key="index"
 			:item="item" @click="quickSearch(item.name)"></color-tag>
 		</view>
@@ -69,14 +73,18 @@
 				],
 			}
 		},
+		
 		onNavigationBarButtonTap(e) {
 			if (e.index === 0) {
 				uni.navigateTo({
-					url: '../search-list/search-list',
+					url: '../search/search-list',
 				});
 			}
 		},
+		
+		// 监听搜索文本框的变化
 		onNavigationBarSearchInputChanged(e) {
+			console.log(e.text);
 			this.keyword = e.text
 		},
 		onNavigationBarSearchInputConfirmed() {
@@ -86,6 +94,8 @@
 			this.search()
 		},
 		onShow() {
+			this.keyword = ""
+			
 			// 加载历史记录
 			let history = uni.getStorageSync('searchHistory')
 			this.historyList =history ? JSON.parse(history) : []

@@ -1,29 +1,29 @@
 <template>
-	<view class="d-flex border-top border-light-secondary" 
-	style="height: 100%; box-sizing: border-box;">
-	
+	<view class="d-flex border-top border-light-secondary animated fadeIn faster" style="height: 100%;box-sizing: border-box;">
+		<!--
+		<loading-plus v-if="beforeReady"></loading-plus>
+		-->
 		<loading :show="showLoading"></loading>
 		
-		<scroll-view id="leftScroll" scroll-y="true" style="flex: 1;height: 100%;"
-		class="border-right  border-light-secondary"
-		:scroll-top="leftScrollTop">
+		<scroll-view id="leftScroll" scroll-y style="flex: 1;height: 100%;" 
+		class="border-right border-light-secondary" :scroll-top="leftScrollTop">
 			<view class="border-bottom border-light-secondary py-1 left-scroll-item"
+			hover-class="bg-light-secondary"
 			v-for="(item,index) in cate" :key="index"
-			@tap="changeIndex(index)">
+			@tap="changeCate(index)">
 				<view class="py-1 font-md text-muted text-center"
 				:class="activeIndex === index ? 'class-active' : ''">
-				{{item.name}}</view>
+					{{item.name}}</view>
 			</view>
 		</scroll-view>
-		<scroll-view 
-		:scroll-top="rightScrollTop" scroll-with-animation="true"
-		scroll-y="true" style="flex: 3.5;height: 100%;"
-		@scroll="onRightSroll">
-			<view class="row right-scroll-item"
-			v-for="(item,index) in list" :key="index">
-				<view class="span24-8 text-center py-2"
+		<scroll-view scroll-y style="flex: 3.5;height: 100%;" 
+		:scroll-top="rightScrollTop" :scroll-with-animation="true"
+		@scroll="onRightScroll">
+			<view class="row right-scroll-item" v-for="(item,index) in list" 
+			:key="index">
+				<view class="span24-8 text-center py-2" @click="openDetail(item2)"
 				v-for="(item2,index2) in item.list" :key="index2">
-					<image :src="item2.cover"
+					<image :src="item2.src"
 					style="width: 120upx;height: 120upx;"></image>
 					<text class="d-block">{{item2.name}}</text>
 				</view>
@@ -33,17 +33,16 @@
 </template>
 
 <script>
-	export default{
-		components:{
-			
-		},
+	import loading from "@/common/mixin/loading.js"
+	export default {
+		mixins:[loading],
 		data() {
 			return {
 				showLoading:true,
+				// 当前选中的分类
 				activeIndex:0,
 				cate:[],
 				list:[],
-				// 
 				leftDomsTop:[],
 				rightDomsTop:[],
 				rightScrollTop:0,
@@ -52,8 +51,7 @@
 			}
 		},
 		watch: {
-			async activeIndex(newValue,oldValue) {
-				//console.log(newValue)
+			async activeIndex(newValue, oldValue) {
 				// 获取scroll-view高度，scrollTop
 				let data = await this.getElInfo({
 					size:true,
@@ -63,7 +61,7 @@
 				let ST = data.scrollTop
 				// 下边
 				if ((this.leftDomsTop[newValue]+this.cateItemHeight) > (H+ST) ) {
-					return this.leftScrollTop = this.leftDomsTop[newValue]+this.cateItemHeight - H
+					 return this.leftScrollTop = this.leftDomsTop[newValue]+this.cateItemHeight - H
 				}
 				// 上边
 				if (ST > this.cateItemHeight) {
@@ -75,27 +73,11 @@
 			this.getData()
 		},
 		onReady() {
-			this.getElInfo({
-				all:'left',
-				size:true,
-				rect:true
-			}).then(data =>{
-				this.leftDomsTop = data.map(v => {
-					this.cateItemHeight = v.height
-					return v.top
-				})
-			})
-			this.getElInfo({
-				all:'right',
-				size:false,
-				rect:true
-			}).then(data =>{
-				this.rightDomsTop = data.map(v => v.top)
-			})
+			
 		},
-		methods:{
-			//获取节点信息的方法
-			getElInfo(obj = {}) {
+		methods: {
+			// 获取节点信息
+			getElInfo(obj = {}){
 				return new Promise((res,rej)=>{
 					let option = {
 						size:obj.size ? true : false,
@@ -105,47 +87,76 @@
 					const query = uni.createSelectorQuery().in(this);
 					let q = obj.all ? query.selectAll(`.${obj.all}-scroll-item`):query.select('#leftScroll')
 					q.fields(option,data => {
-						res(data)
+					  res(data)
 					}).exec();
 				})
-			}
-			,
-			changeIndex(index) {
-				this.activeIndex = index
-				//右边scroll-view滚动到对应分类
-				this.rightScrollTop = this.rightDomsTop[index]
 			},
-			getData() {
-				for(let i = 0;i<20;i++) {
-					this.cate.push({
-						name:"分类"+i
-					})
-					this.list.push({
-						list:[]
-					})
-				}
-				for(let i= 0;i<this.list.length;i++) {
-					for(let j=0;j<10;j++){
-						this.list[i].list.push({
-								cover:"/static/images/demo/cate_03.png",
-								name:`分类${i}商品${j}`
+			getData(){
+				
+				this.$H.get('/product/product/list').then(res=>{
+					res.categories.forEach(v=>{
+						this.cate.push({
+							id:v.id,
+							name:v.name
 						})
+						this.list.push({
+							list:[]
+						})
+					})
+					let products = res.products
+					for(let i=0;i<this.list.length;i++) {
+						for(let j=0;j<products[i].length;j++){
+							this.list[i].list.push({
+									id:products[i][j].id,
+									src:products[i][j].cover,
+									name:products[i][j].title
+							})
+						}
 					}
-				}
-				this.$nextTick( () => {
-					this.showLoading = false
+					this.$nextTick(()=>{
+						this.getElInfo({
+							all:'left',
+							size:true,
+							rect:true
+						}).then(data=>{
+							this.leftDomsTop = data.map(v=>{
+								this.cateItemHeight = v.height
+								return v.top
+							})
+						})
+						this.getElInfo({
+							all:'right',
+							size:false,
+							rect:true
+						}).then(data=>{
+							this.rightDomsTop = data.map(v=> v.top)
+						})
+						this.showLoading = false
+					})
 				})
 			},
+			// 点击左边分类
+			changeCate(index){
+				
+				console.log(index)
+				this.activeIndex = index
+				// 右边scroll-view滚动到对应区块
+				this.rightScrollTop = this.rightDomsTop[index]
+			},
 			// 监听右边滚动事件
-			async onRightSroll(e) {
-				//console.log(e.detail.scrollTop)
+			async onRightScroll(e){
 				// 匹配当前scrollTop所处的索引
 				this.rightDomsTop.forEach((v,k)=>{
-					if(v < e.detail.scrollTop + 3) {
+					if (v < e.detail.scrollTop + 3) {
 						this.activeIndex = k
 						return false
 					}
 				})
+			},
+			openDetail(item){
+				uni.navigateTo({
+					url: '/pages/detail/detail?id='+item.id
+				});
 			}
 		}
 	}

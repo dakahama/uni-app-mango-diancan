@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<!-- 排序|筛选 -->
-		<view class="d-flex border-bottom border-top a-center" style="height: 100upx;">
+		<view class="d-flex border-bottom border-top a-center bg-white" style="height: 100upx;">
 			<view class="flex-1 d-flex a-center j-center"
 			v-for="(item,index) in screen.list" :key="index"
 			@tap="changeScreen(index)">
@@ -15,17 +15,38 @@
 					:class="item.status === 2? 'main-text-color':'text-light-muted'"></view>
 				</view>
 			</view>
+			
+			<view class="flex-1 d-flex a-center j-center main-text-color"
+			@click="showRigth = true">
+				筛选
+			</view>
 		</view>
+		 
+		<!-- 抽屉 -->
+		<uni-drawer :visible="showRigth" mode="right" @close="showRigth = false">
+			<card headTitle="服务" :headBorderBottom="false" :headTitleWeight="false">
 				
+				<!-- 单选按钮组 -->
+				<zcm-radio-group :label="label" 
+				:selected.sync='label.selected'></zcm-radio-group>
+				
+			</card>
+			<!-- 按钮 -->
+			<view class="d-flex position-fixed bottom-0 right-0 w-100 border-top border-light-secondary">
+				<view class="flex-1 main-bg-color text-white font-md py-2 text-center" 
+				hover-class="main-bg-hover-color"
+				@click="confirm">确定</view>
+				<view class="flex-1 font-md py-2 text-center"
+				hover-class="bg-light-secondary" @click="reset">重置</view>
+			</view>
+		</uni-drawer>	
 		<!-- 列表 -->
 		<block v-for="(item,index) in list" :key="index">
 			<searchList :item="item" :index="index"></searchList>
 		</block>
 		
 		<!-- 没有数据 -->
-		<!--
 		<no-thing v-if="list.length === 0" msg="空空如也"></no-thing>
-		-->
 		<!-- 上拉加载更多 -->
 		<divider />
 		<view class="d-flex a-center j-center text-light-muted font-md py-3">
@@ -36,12 +57,16 @@
 </template>
 
 <script>
+	import uniDrawer from "@/components/uni-ui/uni-drawer/uni-drawer.vue"
+	import zcmRadioGroup from "@/components/common/radio-group.vue"
 	import searchList from "@/components/search/search-list.vue"
 	import noThing from '@/components/common/no-thing.vue';
 	export default {
 		components: {			
 			searchList,
-			noThing
+			noThing,
+			uniDrawer,
+			zcmRadioGroup
 		},
 		data() {
 			return {
@@ -49,22 +74,8 @@
 				loadtext:"上拉加载更多",
 				keyword:"",
 				page:1,
-				list:[{
-					title:"hahah",
-					pic:"/static/images/demo/demo6.jpg",
-					desc:"sdfas",
-					pprice:100,
-					comment_num:"sdfa",
-					good_num:"98%",
-				},
-				{
-					title:"hahah",
-					pic:"/static/images/demo/demo6.jpg",
-					desc:"sdfas",
-					pprice:100,
-					comment_num:"sdfa",
-					good_num:"98%"
-				}],
+				limit:5,
+				list:[],
 				screen:{
 					currentIndex:0,
 					list:[
@@ -78,13 +89,14 @@
 					selected:0,
 					list:[
 						{name:"不限",rule:false,value:false},
-						{name:"0-50",rule:"between",value:"0,50"},
+						{name:"0-5",rule:"between",value:"0,5"},
+						{name:"5-10",rule:"between",value:"5,10"},
+						{name:"10-50",rule:"between",value:"10,50"},
 						{name:"50-100",rule:"between",value:"50,100"},
-						{name:"100-500",rule:"between",value:"100,500"},
-						{name:"500-1000",rule:"between",value:"500,1000"},
-						{name:"大于1000",rule:">",value:"1000"},
+						{name:"大于100",rule:">",value:"100"},
 					]
 				},
+				showRigth:false,
 				condition:{},
 				oldSelected:0,
 			}
@@ -103,9 +115,11 @@
 			this.keyword = e.text
 		},
 		onNavigationBarSearchInputConfirmed() {
+			this.initSearch()
 			this.search()
 		},
 		onNavigationBarButtonTap() {
+			this.initSearch()
 			this.search()
 		},
 		onLoad(e) {
@@ -154,8 +168,11 @@
 				// #endif
 				
 				this.addHistory()
-				this.initSearch()			
+				this.initSearch()	
+				this.list = []
+				
 				this.getData()
+					
 			},
 			addHistory(){
 				// 拿到所有的搜索历史
@@ -171,21 +188,29 @@
 				uni.setStorageSync('searchHistory',JSON.stringify(history))
 			},
 			// 加载数据
-			getData(refresh = true, callback = false){
+			getData(refresh = false, callback = false){
 				let page = refresh ? 1 : this.page
-				this.$H.post('/goods/search',{
+				
+				console.log(JSON.stringify(this.options))
+				console.log(JSON.stringify(this.condition))
+				
+				this.$H.post('/product/product/search',{
 					title:this.keyword,
 					page:page,
+					limit:this.limit,
 					...this.options,
 					...this.condition
 				}).then(res=>{
-	
-					let list = this.format(res)
-					this.list = refresh ? [...list] : [...this.list,...list]
+					
+					this.keyword = ""
+					
+					console.log(res)
+					let list = this.format(res.list)
+					this.list = refresh ? [...list]:[...this.list,...list]
 					
 					// 恢复加载状态
-					this.loadtext = res.length < 10 ? '没有更多了' : '上拉加载更多'
-					
+					this.loadtext = res.list.length < this.limit ? '没有更多了' : '上拉加载更多'
+					console.log(this.loadtext)
 					if (typeof callback === 'function') {
 						callback()
 					}
@@ -194,19 +219,21 @@
 			// 格式化
 			format(res){
 				return res.map(item=>{
-					var good_num = item.comments_count === 0 ? 0 : (item.comments_good_count / item.comments_count) * 100
+					var goodNums = item.num === 0 ? 0 : (item.goodNums / item.num) * 100
 					return {
 						id:item.id,
 						title:item.title,
-						titlepic:item.cover,
-						desc:item.desc,
-						pprice:item.min_price,
-						comment_num:item.comments_count,
-						good_num:good_num.toFixed(2) + '%'
+						cover:item.cover,
+						desci:item.desci,
+						price:item.price,
+						num:item.num,
+						goodNums:goodNums.toFixed(2) + '%'
 					}
 				})
 			},
 			changeScreen(index){
+				this.page = 1
+				this.list = []
 				// 判断当前点击是否已经是激活状态
 				let oldIndex = this.screen.currentIndex
 				let oldItem = this.screen.list[oldIndex]
@@ -223,14 +250,19 @@
 				// 增加新激活状态
 				newIitem.status = 1
 				// 加载数据
+				
 				this.getData()
 			},			
 			// 提交筛选条件
 			confirm(){
+				this.page = 1
+				this.list = []
 				// 组织筛选条件
 				this.getCondition()
 				// 获取数据
-				this.getData()				
+				this.getData()
+				
+				this.showRigth = false
 			},
 			// 重置
 			reset(){
@@ -240,12 +272,14 @@
 				this.getData()
 				
 			},
+			
 			// 组织筛选条件
 			getCondition(){
 				let item = this.label.list[this.label.selected]
 				this.condition = (item.rule && item.value) ? {
 					price:item.rule+','+item.value
-				} : {}
+				} : {
+				}
 			}
 		}
 	}

@@ -73,7 +73,7 @@
     "autoclose": false
   },
   "appname": "芒果点餐",
-  "compilerVersion": "2.6.0",
+  "compilerVersion": "2.6.1",
   "usingComponents": {
     "divider": "/components/common/divider",
     "card": "/components/common/card",

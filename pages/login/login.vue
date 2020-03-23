@@ -48,6 +48,7 @@
 				
 				// 验证规则
 				rules:{
+					
 					username:[
 						{
 							rule:/^[a-zA-Z]\w{5,17}$/,
@@ -60,6 +61,7 @@
 							msg:"密码长度必须为5-20个字符"
 						}
 					]
+					
 				},
 				
 				focusClass:{
@@ -77,7 +79,9 @@
 			},
 			// 表单验证
 			validate(key){
+				
 				var check = true
+				/*
 				this.rules[key].forEach((v)=>{
 					// 验证失败
 					if (!(v.rule).test(this[key])) {
@@ -86,6 +90,7 @@
 						return false
 					}
 				})
+				*/
 				return check
 			},
 			// 提交表单
@@ -106,14 +111,15 @@
 				// 	title: '登录中...',
 				// 	mask: true
 				// });
-				this.$H.post('/login',{
+				this.$H.post('/user/user/login',{
 					username:this.username,
 					password:this.password
 				}).then(res=>{
+					console.log(res)
 					// 状态存储
 					this.login(res)
 					// 刷新购物车
-					uni.$emit('updateCart')
+					//uni.$emit('updateCart')
 					uni.hideLoading()
 					uni.showToast({
 						title: '登录成功',

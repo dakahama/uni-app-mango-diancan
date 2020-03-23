@@ -1,13 +1,15 @@
 export default {
 	state:{
 		list:[
+			/*
 			{
-				name:"wac",
-				phone:"12233333234",
-				path:"guangdong",
-				detailPath:"xxxx街道",
-				isdefault:true
+				name:"",
+				phone:"",
+				address:"",
+				detail:"",
+				status:1
 			}
+			*/
 		],
 	},
 	getters:{
@@ -18,7 +20,7 @@ export default {
 	},
 	mutations:{
 		// 覆盖收货地址
-		updatePathList(state,{ refresh,list }){
+		updatePathList(state,{refresh,list}){
 			state.list = refresh ? list : [...state.list,...list];
 		},
 		// 创建收货地址
@@ -38,8 +40,8 @@ export default {
 		// 取消默认地址
 		removeDefault(state){
 			state.list.forEach((v)=>{
-				if (v.isdefault) {
-					v.isdefault = false
+				if (v.status === 1) {
+					v.status = 0
 				}
 			})
 		}
@@ -47,14 +49,14 @@ export default {
 	actions:{
 		// 修改地址
 		updatePathAction({commit},obj){
-			if (obj.item.isdefault) {
+			if (obj.item.status === 1) {
 				commit('removeDefault');
 			}
 			commit('updatePath',obj)
 		},
 		// 增加地址
 		createPathAction({commit},item){
-			if (item.isdefault) {
+			if (item.status === 1) {
 				commit('removeDefault');
 			}
 			commit('createPath',item)

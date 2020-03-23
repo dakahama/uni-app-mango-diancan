@@ -8,12 +8,14 @@
 		<!--属性选择-->
 		<view class="p-2">
 			<view class="rounded border  bg-light-secondary">
+				<!--
 				<uniListItem @click="show('attr')">
 					<view class="d-flex">
 						<text class="mr-2 text-muted">已选</text>
 						<text>小杯</text>
 					</view>
 				</uniListItem>
+				-->
 				<uniListItem @click="show('express')">
 					<view class="d-flex">
 						<text class="mr-2 text-muted">配送</text>
@@ -33,7 +35,7 @@
 			</view>
 		</view>
 	
-		<commentsScroll :comments="comments" :goodId="detail.goodId"></commentsScroll>
+		<commentsScroll :comments="comments" :goodId="detail.id"></commentsScroll>
 		
 		<!--详细页面 富文本-->
 		<view class="py-4">
@@ -45,35 +47,7 @@
 		<!--底部按钮-->
 		<bottomBtn @show="show('attr')"></bottomBtn>
 		
-		<commonPopup :popupClass="popup.attr" @hide="hide('attr')">
-			<!--180 180-->
-			<view class="d-flex a-center"
-			style="height: 275rpx;">
-				<image src="../../static/images/demo/cate_01.png" mode="widthFix"
-				style="height: 180rpx;width: 180rpx;"
-				class="border rounded"></image>
-				<view class="pl-2">
-					<price priceSize="font-lg" unitSize="font">2333</price>
-					<text class="d-block">哈哈哈</text>
-				</view>
-			</view>
-			<scroll-view scroll-y class="w-100" style="height: 660rpx;">
-				<card :headTitle="item.title" :headTitleWeight="false" :headBorderBottom="false"
-				v-for="(item,index) in selects" :key="index">
-					<wacradioGroup :label="item"
-					:selected.sync='item.selected'></wacradioGroup>
-				</card>
-				<view class="d-flex j-sb a-center p-2 border-top border-light-secondary">
-					<text>购买数量</text>
-					<uni-number-box :min="detail.minnum" :max="detail.maxnum"
-					:value="detail.num" @change="detail.num = $event"></uni-number-box>
-				</view>
-			</scroll-view>
-			<!-- 按钮(100rpx) -->
-			<view class="text-white font-md d-flex a-center j-center main-bg-hover-color" 
-			style="height: 100rpx;margin-left: -30rpx;margin-right: -30rpx;"  
-			@tap.stop="addCart">加入购物车</view>
-		</commonPopup>
+		 
 		
 		<!-- 收货地址 -->
 		<common-popup :popupClass="popup.express" @hide="hide('express')">
@@ -133,26 +107,6 @@
 						detailPath:"dsdfasdfasdf"
 					}
 				],
-				selects:[
-					{
-						title:"大小",
-						selected:0,
-						list:[
-							{name:"大杯"},
-							{name:"中杯"},
-							{name:"小杯"}
-						]
-					},
-					{
-						title:"大小",
-						selected:0,
-						list:[
-							{name:"大杯"},
-							{name:"中杯"},
-							{name:"小杯"}
-						]
-					}
-				],
 				//
 				popup:{
 					attr:"none",
@@ -186,24 +140,9 @@
 						]
 					}
 				],
-				banners:[
-					{
-						src:"../../static/images/demo/cate_01.png"
-					},{
-						src:"../../static/images/demo/cate_01.png"
-					}
-				],
-				detail:{
-					id:11,
-					title:"小米",
-					cover:"/static/images/demo/cate_01.png",
-					desc:"是的发送到发送到发送到发斯蒂芬",
-					pprice:3299,
-					num:1,
-					minnum:1,
-					maxnum:100
-				},
-				content:"<h1>hahaha</h1>"
+				banners:[],
+				detail:{},
+				content:""
 			}
 		},
 		computed:{
@@ -222,10 +161,58 @@
 				}
 			}
 		},
+		onLoad(e) {
+			//console.log(e.id);
+			if(e.id){
+				this.__init(e.id)
+			}
+			
+		},
 		methods: {
 			...mapMutations([
 				'addGoodsToCart'
 			]),
+			
+			async __init(id){
+				console.log(id)
+				await this.$H.get('/product/product/get/'+id).then(res=>{
+					console.log(res);
+					let product = res.detail
+					uni.setNavigationBarTitle({
+						title:product.title
+					})
+					this.banners = product.imagesObject.map(v=>{
+						return {
+							cover:v
+						}
+					})
+					
+					this.detail = {
+						id:product.id,
+						title:product.title,
+						cover:product.cover,
+						desci:product.desci,
+						price:product.price,
+						num:product.num,
+						minnum:1,
+						maxnum:100
+					}
+					this.content = product.content
+					
+					this.comments = res.comments.map(v=>{
+						return {
+							userpic:v.user.avatar,
+							username:v.user.username,
+							createTime:v.review.updateTime,
+							context:v.review.detail,
+							imgList:v.review.imageObject
+						}
+					})
+					console.log(res.comments)
+				})
+				
+			},
+			
 			//加入购物车
 			addCart(){
 				let goods = this.detail

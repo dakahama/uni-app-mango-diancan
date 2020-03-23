@@ -2,7 +2,7 @@ import $store from '@/store/index.js'
 export default {
 	// 全局配置
 	common:{
-		baseUrl:"http://ceshi3.dishait.cn/api",
+		baseUrl:"http://localhost:8085",
 		header:{
 			'Content-Type':'application/json;charset=UTF-8',
 			'Content-Type':'application/x-www-form-urlencoded'
@@ -11,6 +11,7 @@ export default {
 		method:'GET',
 		dataType:'json'
 	},
+	
 	// 请求 返回promise
 	request(options = {}){
 		// 组织参数

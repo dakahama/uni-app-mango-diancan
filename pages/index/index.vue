@@ -1,5 +1,6 @@
 <template>
 	<view>
+		<!-- #ifdef MP -->
 		<!-- 自定义导航 -->
 		<view class="d-flex a-center" style="height: 90rpx;">
 			<!-- 左边 -->
@@ -9,14 +10,14 @@
 			<!-- 中间 -->
 			<view class="flex-1 bg-light rounded d-flex a-center text-light-muted" style="height: 65rpx;" @click="openSearch">
 				<text class="iconfont icon-sousuo mx-2"></text>
-				智能积木
+				在此处输入你想要的的菜品
 			</view>
 			<!-- 右边 -->
 			<view style="width: 85rpx;" class="d-flex a-center j-center">
 				<text class="iconfont icon-richscan_icon"></text>
 			</view>
 		</view>
-		
+		<!-- #endif -->
 		<!--顶部选项卡-->
 		<scroll-view scroll-x class="border-bottom scroll-row"
 		style="height: 80rpx;" :scroll-into-view="scrollinto"
@@ -31,33 +32,60 @@
 		</scroll-view>
 		
 		<swiper :duration="150" :current="tabIndex" :style="'height:'+scrollH+'px;'" @change="onChangeTab">
-			<swiper-item v-for="(item,index) in dataList" :key="index">
+			<swiper-item>
 				<scroll-view scroll-y="true" :style="'height:'+scrollH+'px;'">
-					<template v-if="item.list.length > 0">
-						<block v-for="(list,listIndex) in item.list" :key="listIndex">
+					<template>
+						<block>
 							<!--轮播图组件-->
-							<swiperImage v-if="list.name === 'swipers'" :resdata="list.data"></swiperImage>
+							
+							<swiperImage :resdata="dataList.swiper"></swiperImage>
+							
+							<!--
 							<template v-else-if="list.name === 'indexNavs'">
 								<indexNav :resdata="list.data"></indexNav>
 								<divider></divider>
 							</template>
-							
+							-->
 							<!--
 							<card headTitle="店长推荐"></card>
 							<divider></divider>
 							-->
-							<template v-else-if="list.name === 'threeAdvs'">
-									<threeAdv   :resdata="list.data"></threeAdv>
+							<!--
+							<template>
+									<threeAdv :resdata="dataList.threeAdv"></threeAdv>
 									<divider></divider>
 							</template>
-						
-							<template v-else-if="list.name === 'commonLists'">
+							-->
+							
+							<card headTitle="店长推荐"></card>
+							<template>123</template>
+							<template>
 								<view class="row">
-									<block v-for="(item2,index2) in list.data" :key="index2">
+									<block v-for="(item2,index2) in dataList.list" :key="index2">
 										<commonList :item="item2" :index="index2"></commonList>
 									</block>
 								</view>	
 							</template>
+							
+							
+						</block>
+						<view class="" style="height: 500rpx;"></view>
+					</template>
+				</scroll-view>
+			</swiper-item>
+			<swiper-item>
+				<scroll-view scroll-y="true" :style="'height:'+scrollH+'px;'">
+					<template>
+						<block>
+							<card headTitle="店长推荐"></card>
+							<template>
+								<view class="row">
+									<block v-for="(item2,index2) in dataList.list" :key="index2">
+										<commonList :item="item2" :index="index2"></commonList>
+									</block>
+								</view>	
+							</template>
+							{{dataList.gonggao}}
 							
 							
 						</block>
@@ -94,6 +122,7 @@
 </template>
 
 <script>
+	import $H from "@/common/lib/request.js"
 	import swiperImage from "@/components/index/swiper-image.vue"
 	import indexNav from "@/components/index/index-nav.vue"
 	import threeAdv from "@/components/index/three-adv.vue"
@@ -112,78 +141,28 @@
 					{ name:"首页推荐" },
 					{ name:"店铺信息" }
 				],
-				dataList:[
-					{
-						dataName: "首页推荐",
-						list: [
-							{
-								name:"swipers",
-								data:[
-										{
-											src:"../../static/images/demo/demo4.jpg"
-										},
-										{
-											src:"../../static/images/demo/demo5.jpg"
-										}
-								]
-							},
-							{
-								name:"indexNavs",
-								data: [
-									{
-										src:"/static/images/indexnav/1.png",text:"新品发布"
-									},
-									{
-										src:"/static/images/indexnav/1.png",text:"新品发布"
-									},
-									{
-										src:"/static/images/indexnav/1.png",text:"新品发布"
-									}
-								]
-							},
-							{
-								name:"threeAdvs",
-								data:{
-									big: {
-										src:"/static/images/demo/demo1.jpg",
-									},
-									smalltop:{
-										src:"/static/images/demo/demo1.jpg"
-									},
-									smallbottom:{
-										src:"/static/images/demo/demo1.jpg",
-									}	
-								}
-							},
-							{
-								name:"commonLists",
-								data:[
-									{
-										cover:"/static/images/demo/demo1.jpg",
-										name:"buzhidao",
-										desc:"sdfa",
-										pprice:3388,
-										oprice:3344
-									},
-									{
-										cover:"/static/images/demo/demo1.jpg",
-										name:"buzhidao",
-										desc:"sdfa",
-										pprice:3388,
-										oprice:3344
-									}
-								]
-							}
-						]		
-					}		
-				]
+				dataList:{}
 			}				 
+		},
+		onNavigationBarSearchInputClicked() {
+			uni.navigateTo({
+				url:'../search/search'
+			})
+		},
+		created() {
+			
 		},
 		onLoad() {
 			// 获取可视区域高度
 			uni.getSystemInfo({
 				success: (res) => {
-					this.scrollH = res.windowHeight - uni.upx2px(82)
+					// #ifndef MP
+					let navbarH = 0
+					// #endif
+					// #ifdef MP
+					let navbarH = uni.upx2px(90)
+					// #endif
+					this.scrollH = res.windowHeight - uni.upx2px(82) - navbarH
 				}
 			})
 			
@@ -191,12 +170,48 @@
 
 		},
 		methods: {
-			__init(){
-				//初始化顶部的选项卡
-				//this.tabBars = demoTabBars
+			
+			async __init(){
 				
+				let data = await $H.get("/product/product/index")
+				if(data){
+					console.log(data)
+					this.dataList = data
+				}
+				/*
+				$H.get("/product/product/index").then(res=>{
+					console.log(res)
+					this.dataList = res
+				}).catch(()=>{
+					
+				})
 				
+				*/
+				/*
+				let [error,result] = await uni.request({
+					url: 'http://localhost:8085/product/product/index',
+					//url: 'http://ceshi3.dishait.cn/api/index_category/data',
+					method:'GET'
+				})
+				
+				if (error) {
+					//return console.log(error.errMsg)
+					return uni.showToast({
+						title:error.errMsg,
+						icon:'none'
+					})
+				}
+				if (result.statusCode !== 200) {
+					//return console.log(result.data.msg)
+					return uni.showToast({
+						title:result.data.msg,
+						icon:'none'
+					})
+				}
+				*/
 			},
+			
+			
 			changeTab(index) {
 				if(this.tabIndex === index){
 					return;
@@ -207,6 +222,7 @@
 			// 监听滑动列表
 			onChangeTab(e){
 				this.changeTab(e.detail.current)
+				console.log(e.detail.current)
 			},
 			// 点击主页搜索框 跳转到搜索页面
 			openSearch(){
