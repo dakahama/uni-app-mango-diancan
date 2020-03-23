@@ -198,6 +198,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var _loading = _interopRequireDefault(__webpack_require__(/*! @/common/mixin/loading.js */ 36));
 
 
@@ -213,12 +214,12 @@ var _vuex = __webpack_require__(/*! vuex */ 16);function _interopRequireDefault(
 
   data: function data() {
     return {
-      isedit: false,
-      hotList: [] };
+      isedit: false };
 
   },
   computed: _objectSpread({},
   (0, _vuex.mapState)({
+    userInfo: function userInfo(state) {return state.user.userInfo;},
     list: function list(state) {return state.cart.list;},
     selectedList: function selectedList(state) {return state.cart.selectedList;} }),
 
@@ -270,7 +271,14 @@ var _vuex = __webpack_require__(/*! vuex */ 16);function _interopRequireDefault(
 
     },
     // 获取数据
-    getData: function getData() {var _this = this;
+    getData: function getData() {
+
+
+      this.$H.get('/product/cart/' + this.userInfo.id, {}, {
+        token: true }).
+      then(function (res) {
+        console.log(res);
+      });
       // 获取购物车数据
       this.updateCartList().
       then(function (res) {
@@ -278,19 +286,6 @@ var _vuex = __webpack_require__(/*! vuex */ 16);function _interopRequireDefault(
       }).
       catch(function (err) {
         uni.stopPullDownRefresh();
-      });
-      // 获取热门推荐
-      this.$H.get('/goods/hotlist').then(function (res) {
-        _this.hotList = res.map(function (v) {
-          return {
-            id: v.id,
-            cover: v.cover,
-            title: v.title,
-            desc: v.desc,
-            oprice: v.min_oprice,
-            pprice: v.min_price };
-
-        });
       });
     } }) };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))

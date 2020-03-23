@@ -119,7 +119,7 @@
 					// 状态存储
 					this.login(res)
 					// 刷新购物车
-					//uni.$emit('updateCart')
+					uni.$emit('updateCart')
 					uni.hideLoading()
 					uni.showToast({
 						title: '登录成功',

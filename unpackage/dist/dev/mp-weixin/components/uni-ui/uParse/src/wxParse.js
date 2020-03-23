@@ -149,7 +149,7 @@ var _html2json = _interopRequireDefault(__webpack_require__(/*! ./libs/html2json
 //
 //
 //
-var wxParseTemplate = function wxParseTemplate() {return __webpack_require__.e(/*! import() | components/uni-ui/uParse/src/components/wxParseTemplate0 */ "components/uni-ui/uParse/src/components/wxParseTemplate0").then(__webpack_require__.bind(null, /*! ./components/wxParseTemplate0 */ 393));};var _default2 = { name: 'wxParse', props: { loading: { type: Boolean, default: false }, className: { type: String, default: '' }, content: { type: String, default: '' },
+var wxParseTemplate = function wxParseTemplate() {return __webpack_require__.e(/*! import() | components/uni-ui/uParse/src/components/wxParseTemplate0 */ "components/uni-ui/uParse/src/components/wxParseTemplate0").then(__webpack_require__.bind(null, /*! ./components/wxParseTemplate0 */ 383));};var _default2 = { name: 'wxParse', props: { loading: { type: Boolean, default: false }, className: { type: String, default: '' }, content: { type: String, default: '' },
     noData: {
       type: String,
       default: '<div style="color: red;">数据不能为空</div>' },

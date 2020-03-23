@@ -37,7 +37,7 @@
 		}
 		,
 		methods: {
-			...mapMutations(['logout']),
+			...mapMutations(['logout','clearCart']),
 			logoutEvent(){
 				
 				this.$H.post('/user/user/logout',{},{
@@ -46,6 +46,8 @@
 					toast:false
 				}).then(res=>{
 					this.logout()
+					// 清空购物车
+					this.clearCart()
 					uni.showToast({
 						title:'退出成功',
 						icon:'none'

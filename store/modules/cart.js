@@ -1,52 +1,10 @@
-//import $H from '@/common/lib/request.js';
-//import $U from '@/common/lib/util.js';
+import $H from '@/common/lib/request.js';
+import $U from '@/common/lib/util.js';
 export default {
 	state:{
-		list:[
-			{
-				checked:false,
-				id:2,
-				title:"标题",
-				cover:"/static/images/demo/cate_01.png",
-				attrs:[
-					{
-						title:"大小",
-						selected:0,
-						list:[
-							{ name:"大" },
-							{ name:"小"},
-						]
-					}
-				],
-				pprice:3333,
-				num:1,
-				minnum:1,
-				maxnum:5
-			},
-			{
-				checked:false,
-				id:5,
-				title:"标题",
-				cover:"/static/images/demo/cate_01.png",
-				attrs:[
-					{
-						title:"大小",
-						selected:0,
-						list:[
-							{ name:"大" },
-							{ name:"小"},
-						]
-					}
-				],
-				pprice:3333,
-				num:1,
-				minnum:1,
-				maxnum:5
-			}
-		],
+		list:[],
 		//选中id数组
 		selectedList:[],
-		popupShow:"none",
 		//当前操作的商品
 		popupIndex:-1
 	},
@@ -60,7 +18,7 @@ export default {
 			var total = 0
 			state.list.forEach(v=>{
 				if(state.selectedList.indexOf(v.id) > -1){
-					 total += v.pprice*v.num
+					 total += v.price*v.num
 				}
 			})
 			return total
@@ -68,12 +26,34 @@ export default {
 		disableSelectAll:(state)=>{
 			return state.list.length === 0
 		},
-		//拿到当前需要修改属性的商品
-		popupData:(state)=>{
-			return state.popupIndex > -1 ? state.list[state.popupIndex] : {}
+		
+		cartCount:(state)=>{
+			if(state.list.length <=99) {
+				return state.list.length
+			}
+			return '99+'
 		}
+		
 	},
 	mutations:{
+		initCartList(state,list){
+			state.list = list
+			
+			//$U.updateCartBadge(state.list.length)
+			/*
+			let count = state.list.length
+			if(count > 0){
+				uni.setTabBarBadge({
+					index:2,
+					text:count.toString()
+				})
+			}
+			*/
+		
+		},
+		
+		
+		
 		//全选
 		selectAll(state){
 			state.selectedList = state.list.map(v=>{
@@ -106,17 +86,23 @@ export default {
 			state.list = state.list.filter(v=>{
 				return state.selectedList.indexOf(v.id) === -1
 			})
-		},
-		//初始化popupIndex
-		initPopupIndex(state,index){
-			state.popupIndex = index
+			//$U.updateCartBadge(state.list.length)
+			
 		},
 		//加入购物车
 		addGoodsToCart(state,goods){
 			state.list.unshift(goods)
+			
+			//$U.updateCartBadge(state.list.length)
+		},
+		
+		clearCart(state){
+			state.list = []
+			state.selectedList = []
 		}
 	},
 	actions:{
+		
 		doSelectAll({commit,getters}){
 			getters.checkedAll ? commit('unSelectAll'):commit('selectAll')
 		},
@@ -132,26 +118,22 @@ export default {
 				content: '是否删除选中',
 				success: function (res) {
 					if (res.confirm) {
-						commit('delGoods')
-						uni.showToast({
-							title:'删除成功'
+						
+						$H.post('/product/cart/delete',{
+							cartIds:state.selectedList
+						},{
+							token:true
+						}).then(res=>{
+							commit('delGoods')
+							commit('unSelectAll')
+							uni.showToast({
+								title:res
+							})
 						})
+						
 					}
 				}
 			});
 		},
-		//显示popup
-		doShowPopup({state,commit},index){
-			commit('initPopupIndex',index)
-			state.popupShow = "show"
-		},
-		//隐藏
-		doHidePopup({state}){
-			state.popupShow = 'hide'
-			setTimeout(()=>{
-				state.popupShow = 'none'
-				commit('initPopupIndex',-1)
-			},200)
-		}
 	}
 }

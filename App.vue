@@ -15,6 +15,8 @@
 		},
 		onLaunch: function() {
 			this.$store.commit('initUser')
+			
+			//this.$store.dispatch('updateCartList')
 		},
 		onShow: function() {
 			console.log('App Show')

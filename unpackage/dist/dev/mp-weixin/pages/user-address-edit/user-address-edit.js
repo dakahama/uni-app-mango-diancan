@@ -179,6 +179,7 @@ var _vuex = __webpack_require__(/*! vuex */ 16);function _objectSpread(target) {
       themeColor: '#007AFF',
       index: -1,
       form: {
+        id: "",
         name: "",
         phone: "",
         address: "",
@@ -187,6 +188,11 @@ var _vuex = __webpack_require__(/*! vuex */ 16);function _objectSpread(target) {
 
 
   },
+  computed: _objectSpread({},
+  (0, _vuex.mapState)({
+    userInfo: function userInfo(state) {return state.user.userInfo;} })),
+
+
   onLoad: function onLoad(e) {
     //从地址详情页跳转到地址编辑页 有数据即为编辑 无数据即为创建
     if (e.data) {
@@ -207,8 +213,6 @@ var _vuex = __webpack_require__(/*! vuex */ 16);function _objectSpread(target) {
   onUnload: function onUnload() {
 
   },
-  computed: {},
-
   methods: _objectSpread({},
   (0, _vuex.mapActions)(['updatePathAction', 'createPathAction']), {
     // 提交
@@ -218,8 +222,11 @@ var _vuex = __webpack_require__(/*! vuex */ 16);function _objectSpread(target) {
       // 修改
       if (this.isedit) {
 
-        this.$H.post('/useraddresses/' + this.form.id, this.form, {
-          token: true }).
+        this.$H.post('/user/user/address/update/' + this.form.id, this.form, {
+          token: true,
+          header: {
+            'Content-Type': 'application/json;charset=UTF-8' } }).
+
         then(function (res) {
           _this.updatePathAction({
             index: _this.index,
@@ -229,19 +236,19 @@ var _vuex = __webpack_require__(/*! vuex */ 16);function _objectSpread(target) {
           uni.navigateBack({ delta: 1 });
           uni.$emit('updateUserPathList');
         });
-
         return;
       }
 
-      this.$H.post('/useraddresses', this.form, {
-        token: true }).
+      this.$H.post('/user/user/address/' + this.userInfo.id, this.form, {
+        token: true,
+        header: {
+          'Content-Type': 'application/json;charset=UTF-8' } }).
+
       then(function (res) {
-        // 创建成功
         _this.createPathAction(_this.form);
         uni.showToast({ title: '创建成功' });
         uni.navigateBack({ delta: 1 });
       });
-
     } }) };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

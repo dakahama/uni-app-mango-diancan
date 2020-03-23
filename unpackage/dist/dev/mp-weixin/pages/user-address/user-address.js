@@ -164,6 +164,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var _vuex = __webpack_require__(/*! vuex */ 16);function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};var ownKeys = Object.keys(source);if (typeof Object.getOwnPropertySymbols === 'function') {ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {return Object.getOwnPropertyDescriptor(source, sym).enumerable;}));}ownKeys.forEach(function (key) {_defineProperty(target, key, source[key]);});}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var uniListItem = function uniListItem() {return __webpack_require__.e(/*! import() | components/uni-ui/uni-list-item/uni-list-item */ "components/uni-ui/uni-list-item/uni-list-item").then(__webpack_require__.bind(null, /*! @/components/uni-ui/uni-list-item/uni-list-item.vue */ 264));};var uniSwipeAction = function uniSwipeAction() {return Promise.all(/*! import() | components/uni-ui/uni-swipe-action/uni-swipe-action */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/uni-ui/uni-swipe-action/uni-swipe-action")]).then(__webpack_require__.bind(null, /*! @/components/uni-ui/uni-swipe-action/uni-swipe-action.vue */ 332));};var noThing = function noThing() {return __webpack_require__.e(/*! import() | components/common/no-thing */ "components/common/no-thing").then(__webpack_require__.bind(null, /*! @/components/common/no-thing.vue */ 295));};var _default =
 {
   components: {
@@ -196,7 +197,7 @@ var _vuex = __webpack_require__(/*! vuex */ 16);function _objectSpread(target) {
     userInfo: function userInfo(state) {return state.user.userInfo;} })),
 
 
-  // 监听导航栏按钮点击
+  // 监听导航栏按钮点击 新增
   onNavigationBarButtonTap: function onNavigationBarButtonTap(e) {
     if (e.index === 0) {
       uni.navigateTo({
@@ -219,6 +220,7 @@ var _vuex = __webpack_require__(/*! vuex */ 16);function _objectSpread(target) {
   onUnload: function onUnload() {
     uni.$off('updateUserPathList');
   },
+  // 下拉刷新
   onPullDownRefresh: function onPullDownRefresh() {
     this.page = 1;
     this.getData(function () {
@@ -274,20 +276,20 @@ var _vuex = __webpack_require__(/*! vuex */ 16);function _objectSpread(target) {
             index: i,
             item: this.list[i] };
 
-          obj.item.default = i === 0 && obj.item.last_used_time !== null ? 1 : 0;
           setTimeout(function () {
             uni.navigateTo({
               url: '../user-address-edit/user-address-edit?data=' + JSON.stringify(obj) });
 
           }, 50);
           break;
+
         case 1: // 删除
           uni.showModal({
             content: '要删除该收货地址吗？',
             success: function success(res) {
               if (res.confirm) {
 
-                _this3.$H.del('/useraddresses/' + _this3.list[i].id, {}, {
+                _this3.$H.del('/user/user/address/' + _this3.list[i].id, {}, {
                   token: true }).
                 then(function (res) {
                   _this3.delPath(i);

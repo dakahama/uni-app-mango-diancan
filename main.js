@@ -14,8 +14,8 @@ import loading from "@/components/common/loading.vue"
 
 import $H from "@/common/lib/request.js"
 Vue.prototype.$H = $H
-
-
+import $U from '@/common/lib/util.js';
+Vue.prototype.$U = $U
 Vue.prototype.navigateTo = (options)=>{
 	if(!store.state.user.loginStatus){
 		uni.showToast({

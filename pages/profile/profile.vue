@@ -3,8 +3,10 @@
 		<view class="position-relative d-flex a-center" style="height: 320rpx;">
 			<!-- 点击打开消息列表 -->
 			<navigator url="../msg-list/msg-list">
+				
 				<view class="iconfont icon-xiaoxi position-absolute text-white"
-				style="font-size: 50rpx;top: 75rpx;right: 20rpx;z-index: 100;"></view>
+				style="font-size: 50rpx;top: 75rpx;right: 20rpx;z-index: 100;">
+				</view>
 			</navigator>
 			<image src="../../static/bg.jpg" mode="widthFix" 
 			style="height: 320rpx;"></image>

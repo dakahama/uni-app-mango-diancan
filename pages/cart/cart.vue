@@ -25,9 +25,9 @@
 					<view class="text-dark" style="font-size: 35upx;">{{ item.title }}</view>
 
 					<view class="mt-auto d-flex j-sb">
-						<price>{{ item.pprice }}</price>
+						<price>{{ item.price }}</price>
 						<view class="a-self-end">
-							<uni-number-box :min="item.minnum" :value="item.num" :max="item.maxnum" @change="changeNum($event, item, index)"></uni-number-box>
+							<uni-number-box :min="min" :value="item.num" :max="max" @change="changeNum($event, item, index)"></uni-number-box>
 						</view>
 					</view>
 				</view>
@@ -37,7 +37,7 @@
 		<!-- 占位 -->
 		<view style="height: 100upx;"></view>
 		<!-- 合计 -->
-		<view class="d-flex a-center position-fixed left-0 right-0 bottom-0 border-top border-light-secondary a-stretch bg-white" style="height: 100upx;z-index: 1000;">
+		<view class="d-flex a-center left-0 right-0 bottom-0 border-top border-light-secondary a-stretch bg-white" style="height: 100upx;z-index: 1000;">
 			<label class="radio d-flex a-center j-center flex-shrink" style="width: 120upx;" @click="doSelectAll">
 				<radio color="#FD6801" :checked="checkedAll" :disabled="disableSelectAll" />
 			</label>
@@ -49,13 +49,13 @@
 				<view class="flex-1 d-flex a-center j-center main-bg-color text-white font-md" hover-class="main-bg-hover-color" @tap="orderConfirm">结算</view>
 			</template>
 			<template v-else>
-				<view class="flex-1 d-flex a-center j-center font-md main-bg-color text-white">移入收藏</view>
 				<view class="flex-1 d-flex a-center j-center bg-danger text-white font-md" hover-class="main-bg-hover-color" @tap="doDelGoods">删除</view>
 			</template>
 			<view class="" style="height: 500rpx;"></view>
 		</view>
-
-		<view class="" style="height: 500rpx;"></view>
+	
+	
+	
 	</view>
 </template>
 
@@ -75,12 +75,14 @@ export default {
 	},
 	data() {
 		return {
-			isedit: false,
-			hotList: []
-		};
+			min:1,
+			max:100,
+			isedit: false
+		}
 	},
 	computed: {
 		...mapState({
+			userInfo:state=>state.user.userInfo,
 			list: state => state.cart.list,
 			selectedList: state => state.cart.selectedList
 		}),
@@ -88,36 +90,34 @@ export default {
 	},
 	onLoad() {
 		this.getData();
+		
+		uni.$on('updateCart',()=>{
+			this.getData()
+		})
 	},
 	beforeDestroy() {
 		uni.$off('updateCart');
 	},
 	onPullDownRefresh() {
-		this.getData();
+		this.getData()
 	},
 	methods: {
-		...mapActions(['doSelectAll', 'doDelGoods', 'doShowPopup', 'updateCartList']),
+		...mapActions(['doSelectAll', 'doDelGoods']),
 		...mapMutations(['selectItem', 'initCartList', 'unSelectAll']),
 		changeNum(e, item, index) {
 			if (item.num === e) return;
 			uni.showLoading({
 				title: '加载中...'
-			});
-			this.$H
-				.post(
-					'/cart/updatenumber/' + item.id,
-					{
-						num: e
-					},
-					{
+			})
+			this.$H.post('/product/cart/update/number/' + item.id,{
+				num:e
+				},{
 						token: true
-					}
-				)
-				.then(res => {
-					console.log(res);
+				}
+				).then(res => {
 					item.num = e;
 					uni.hideLoading();
-				});
+				})
 		},
 		// 订单结算
 		orderConfirm() {
@@ -133,27 +133,16 @@ export default {
 		},
 		// 获取数据
 		getData() {
-			// 获取购物车数据
-			this.updateCartList()
-				.then(res => {
-					uni.stopPullDownRefresh();
-				})
-				.catch(err => {
-					uni.stopPullDownRefresh();
-				});
-			// 获取热门推荐
-			this.$H.get('/goods/hotlist').then(res => {
-				this.hotList = res.map(v => {
-					return {
-						id: v.id,
-						cover: v.cover,
-						title: v.title,
-						desc: v.desc,
-						oprice: v.min_oprice,
-						pprice: v.min_price
-					};
-				});
-			});
+			this.$H.get('/product/cart/'+this.userInfo.id,{},{
+				token:true,
+				toast:false
+			}).then(res=>{
+				this.unSelectAll()
+				this.initCartList(res)
+				uni.stopPullDownRefresh()
+			}).catch(err=>{
+				uni.stopPullDownRefresh()
+			})
 		}
 	}
 };

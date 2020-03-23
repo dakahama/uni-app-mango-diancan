@@ -116,7 +116,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var uniStatusBar = function uniStatusBar() {return __webpack_require__.e(/*! import() | components/uni-ui/uni-status-bar/uni-status-bar */ "components/uni-ui/uni-status-bar/uni-status-bar").then(__webpack_require__.bind(null, /*! ../uni-status-bar/uni-status-bar.vue */ 357));};var uniIcon = function uniIcon() {return __webpack_require__.e(/*! import() | components/uni-ui/uni-icon/uni-icon */ "components/uni-ui/uni-icon/uni-icon").then(__webpack_require__.bind(null, /*! ../uni-icon/uni-icon.vue */ 379));};var _default =
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var uniStatusBar = function uniStatusBar() {return __webpack_require__.e(/*! import() | components/uni-ui/uni-status-bar/uni-status-bar */ "components/uni-ui/uni-status-bar/uni-status-bar").then(__webpack_require__.bind(null, /*! ../uni-status-bar/uni-status-bar.vue */ 347));};var uniIcon = function uniIcon() {return __webpack_require__.e(/*! import() | components/uni-ui/uni-icon/uni-icon */ "components/uni-ui/uni-icon/uni-icon").then(__webpack_require__.bind(null, /*! ../uni-icon/uni-icon.vue */ 369));};var _default =
 
 
 

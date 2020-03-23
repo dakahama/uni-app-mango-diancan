@@ -2763,10 +2763,6 @@ var _default = {
         return state.selectedList.indexOf(v.id) === -1;
       });
     },
-    //初始化popupIndex
-    initPopupIndex: function initPopupIndex(state, index) {
-      state.popupIndex = index;
-    },
     //加入购物车
     addGoodsToCart: function addGoodsToCart(state, goods) {
       state.list.unshift(goods);
@@ -2789,25 +2785,13 @@ var _default = {
         success: function success(res) {
           if (res.confirm) {
             commit('delGoods');
+            commit('unSelectAll');
             uni.showToast({
               title: '删除成功' });
 
           }
         } });
 
-    },
-    //显示popup
-    doShowPopup: function doShowPopup(_ref3, index) {var state = _ref3.state,commit = _ref3.commit;
-      commit('initPopupIndex', index);
-      state.popupShow = "show";
-    },
-    //隐藏
-    doHidePopup: function doHidePopup(_ref4) {var state = _ref4.state;
-      state.popupShow = 'hide';
-      setTimeout(function () {
-        state.popupShow = 'none';
-        commit('initPopupIndex', -1);
-      }, 200);
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
@@ -2981,7 +2965,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     // 取消默认地址
     removeDefault: function removeDefault(state) {
       state.list.forEach(function (v) {
-        if (v.status) {
+        if (v.status === 1) {
           v.status = 0;
         }
       });
@@ -2990,14 +2974,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   actions: {
     // 修改地址
     updatePathAction: function updatePathAction(_ref3, obj) {var commit = _ref3.commit;
-      if (obj.item.status) {
+      if (obj.item.status === 1) {
         commit('removeDefault');
       }
       commit('updatePath', obj);
     },
     // 增加地址
     createPathAction: function createPathAction(_ref4, item) {var commit = _ref4.commit;
-      if (item.status) {
+      if (item.status === 1) {
         commit('removeDefault');
       }
       commit('createPath', item);
@@ -11693,7 +11677,7 @@ module.exports = {"_from":"@dcloudio/uni-stat@alpha","_id":"@dcloudio/uni-stat@2
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "usingComponents": { "swiper-image": "/components/index/swiper-image", "index-nav": "/components/index/index-nav", "three-adv": "/components/index/three-adv" }, "usingAutoImportComponents": {} }, "pages/class/class": { "navigationBarTitleText": "菜单", "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/cart/cart": { "usingComponents": { "uni-nav-bar": "/components/uni-ui/uni-nav-bar/uni-nav-bar", "uni-number-box": "/components/uni-ui/uni-number-box/uni-number-box", "common-list": "/components/common/common-list" }, "usingAutoImportComponents": {} }, "pages/profile/profile": { "usingComponents": { "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item" }, "usingAutoImportComponents": {} }, "pages/search/search": { "usingComponents": { "color-tag": "/components/search/color-tag", "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item" }, "usingAutoImportComponents": {} }, "pages/search/search-list": { "enablePullDownRefresh": true, "usingComponents": { "search-list": "/components/search/search-list", "no-thing": "/components/common/no-thing", "uni-drawer": "/components/uni-ui/uni-drawer/uni-drawer", "zcm-radio-group": "/components/common/radio-group" }, "usingAutoImportComponents": {} }, "pages/detail/detail": { "usingComponents": { "swiper-image": "/components/index/swiper-image", "base-info": "/components/detail/base-info", "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item", "comments-scroll": "/components/detail/comments-scroll", "weixin-parse": "/components/uni-ui/uParse/src/wxParse", "bottom-btn": "/components/detail/bottom-btn", "common-popup": "/components/common/common-popup", "wacradio-group": "/components/common/radio-group", "uni-number-box": "/components/uni-ui/uni-number-box/uni-number-box" }, "usingAutoImportComponents": {} }, "pages/detail-comments/detail-comments": { "navigationBarTitleText": "商品评价", "enablePullDownRefresh": true, "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/user-set/user-set": { "navigationBarTitleText": "用户设置", "usingComponents": { "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item" }, "usingAutoImportComponents": {} }, "pages/user-info/user-info": { "navigationBarTitleText": "个人资料", "usingComponents": { "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item" }, "usingAutoImportComponents": {} }, "pages/user-address/user-address": { "navigationBarTitleText": "收货地址", "usingComponents": { "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item", "uni-swipe-action": "/components/uni-ui/uni-swipe-action/uni-swipe-action", "no-thing": "/components/common/no-thing" }, "usingAutoImportComponents": {} }, "pages/user-address-edit/user-address-edit": { "navigationBarTitleText": "编辑收货地址", "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/order/order": { "navigationBarTitleText": "我的订单", "usingComponents": { "no-thing": "/components/common/no-thing", "order-list": "/components/order/order-list" }, "usingAutoImportComponents": {} }, "pages/order-confirm/order-confirm": { "navigationBarTitleText": "订单配送至", "navigationBarBackgroundColor": "#FD6801", "navigationBarTextStyle": "white", "usingComponents": { "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item", "price": "/components/common/price" }, "usingAutoImportComponents": {} }, "pages/order-invoice/order-invoice": { "navigationBarTitleText": "发票", "usingComponents": { "card": "/components/common/card", "zcm-radio-group": "/components/common/radio-group" }, "usingAutoImportComponents": {} }, "pages/login/login": { "usingComponents": { "uni-status-bar": "/components/uni-ui/uni-status-bar/uni-status-bar" }, "usingAutoImportComponents": {} }, "pages/msg-list/msg-list": { "navigationBarTitleText": "消息列表", "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/msg-detail/msg-detail": { "navigationBarTitleText": "消息详情页", "usingComponents": { "u-parse": "/components/uni-ui/uParse/src/wxParse" }, "usingAutoImportComponents": {} }, "pages/pay-methods/pay-methods": { "navigationBarTitleText": "选择支付方式", "usingComponents": { "price": "/components/common/price", "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item" }, "usingAutoImportComponents": {} }, "pages/pay-result/pay-result": { "navigationBarTitleText": "支付成功", "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/order-coupon/order-coupon": { "navigationBarTitleText": "优惠券", "usingComponents": { "no-thing": "/components/common/no-thing", "coupon": "/components/order-coupon/coupon" }, "usingAutoImportComponents": {} }, "pages/order-detail/order-detail": { "usingComponents": { "order-list-item": "/components/order/order-list-item", "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item", "price": "/components/common/price", "card": "/components/common/card", "common-button": "/components/common/common-button" }, "usingAutoImportComponents": {} }, "pages/after-sale/after-sale": { "navigationBarTitleText": "申请售后", "usingComponents": { "card": "/components/common/card", "zcm-radio-group": "/components/common/radio-group" }, "usingAutoImportComponents": {} }, "pages/about/about": { "navigationBarTitleText": "关于xxx商城", "usingComponents": { "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item" }, "usingAutoImportComponents": {} }, "pages/coupon/coupon": { "enablePullDownRefresh": true, "navigationBarTitleText": "领取优惠券", "usingComponents": { "coupon": "/components/order-coupon/coupon", "no-thing": "/components/common/no-thing" }, "usingAutoImportComponents": {} }, "pages/order-refund/order-refund": { "navigationBarTitleText": "申请退款", "usingComponents": {}, "usingAutoImportComponents": {} } }, "globalStyle": { "navigationBarTextStyle": "black", "navigationBarTitleText": "芒果点餐", "navigationBarBackgroundColor": "#F1F1F1", "backgroundColor": "#F1F1F1" } };exports.default = _default;
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": {}, "pages/class/class": { "navigationBarTitleText": "菜单" }, "pages/cart/cart": {}, "pages/profile/profile": {}, "pages/search/search": {}, "pages/search/search-list": { "enablePullDownRefresh": true }, "pages/detail/detail": {}, "pages/detail-comments/detail-comments": { "navigationBarTitleText": "商品评价", "enablePullDownRefresh": true }, "pages/user-set/user-set": { "navigationBarTitleText": "用户设置" }, "pages/user-info/user-info": { "navigationBarTitleText": "个人资料" }, "pages/user-address/user-address": { "navigationBarTitleText": "收货地址", "enablePullDownRefresh": true }, "pages/user-address-edit/user-address-edit": { "navigationBarTitleText": "编辑收货地址" }, "pages/order/order": { "navigationBarTitleText": "我的订单" }, "pages/order-confirm/order-confirm": { "navigationBarTitleText": "订单配送至", "navigationBarBackgroundColor": "#FD6801", "navigationBarTextStyle": "white" }, "pages/order-invoice/order-invoice": { "navigationBarTitleText": "发票" }, "pages/login/login": {}, "pages/msg-list/msg-list": { "navigationBarTitleText": "消息列表" }, "pages/msg-detail/msg-detail": { "navigationBarTitleText": "消息详情页" }, "pages/pay-methods/pay-methods": { "navigationBarTitleText": "选择支付方式" }, "pages/pay-result/pay-result": { "navigationBarTitleText": "支付成功" }, "pages/order-coupon/order-coupon": { "navigationBarTitleText": "优惠券" }, "pages/order-detail/order-detail": {}, "pages/after-sale/after-sale": { "navigationBarTitleText": "申请售后" }, "pages/about/about": { "navigationBarTitleText": "关于xxx商城" }, "pages/coupon/coupon": { "enablePullDownRefresh": true, "navigationBarTitleText": "领取优惠券" }, "pages/order-refund/order-refund": { "navigationBarTitleText": "申请退款" } }, "globalStyle": { "navigationBarTextStyle": "black", "navigationBarTitleText": "芒果点餐", "navigationBarBackgroundColor": "#F1F1F1", "backgroundColor": "#F1F1F1" } };exports.default = _default;
 
 /***/ }),
 
