@@ -2,7 +2,7 @@
 	<view>
 		<textarea v-model="reason" placeholder="请填写退款理由" class="uni-textarea p-2"/>
 		<view class="p-3">
-			<button type="default" class="bg-white" @click="submit"
+			<button type="default" class="bg-light" @click="submit"
 			:disabled="reason.length === 0" :loading="loading">
 				{{loading ? '加载中...' : '申请退款'}}
 			</button>
@@ -31,7 +31,7 @@
 		methods: {
 			submit(){
 				this.loading = true
-				this.$H.post('/order/'+this.id+'/apply_refund',{
+				this.$H.post('/order/order/refund/'+this.id,{
 					reason:this.reason
 				},{
 					token:true

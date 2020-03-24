@@ -23,14 +23,17 @@
 	export default {
 		data() {
 			return {
-				
+				id:""
 			}
+		},
+		onLoad(e) {
+			this.id = e.id
 		},
 		methods: {
 			openDetail(){
 				uni.navigateBack({
-					delta: 1
-				});
+					delta:1
+				})
 			},
 			openIndex(){
 				uni.switchTab({

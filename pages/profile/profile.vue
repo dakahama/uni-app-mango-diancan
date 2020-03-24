@@ -79,16 +79,22 @@
 						name:"待付款",
 						icon:"icon-wallet_icon",
 						index:1
-					},{
+					}
+					,{
+						name:"待发货",
+						icon:"icon-",
+						index:1
+					}
+					,{
 						name:"待收货",
-						icon:"icon-daishouhuo",
+						icon:"",
 						index:2
 					},{
 						name:"待评价",
 						icon:"icon-pinglun",
 						index:3
 					},{
-						name:"待退修",
+						name:"退款",
 						icon:"icon-buoumaotubiao46"
 					},
 				]

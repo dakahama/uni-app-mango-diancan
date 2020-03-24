@@ -33,6 +33,7 @@
 <script>
 	import noThing from "@/components/common/no-thing.vue"
 	import orderList from "@/components/order/order-list.vue"
+	import {mapState} from "vuex"
 	export default {
 		components:{
 			noThing,
@@ -42,18 +43,25 @@
 			return {
 				tabIndex:0,
 				tabBars:[
-					{ 
+					{
 						name:"全部",
-						no_thing:"no_pay",
-						msg:"你还没有订单",
+						no_thing:"no_comment",
+						msg:"你还没有待评价订单",
 						key:"all",
-						list:[],
+						list:[]
 					},
 					{
 						name:"待付款",
 						no_thing:"no_pay",
 						msg:"你还没有待付款订单",
-						key:"paying",
+						key:"nopay",
+						list:[]
+					},
+					{
+						name:"待发货",
+						no_thing:"no_pay",
+						msg:"你还没有待付款订单",
+						key:"noship",
 						list:[]
 					},
 					{
@@ -67,7 +75,14 @@
 						name:"待评价",
 						no_thing:"no_comment",
 						msg:"你还没有待评价订单",
-						key:"reviewing",
+						key:"received",
+						list:[]
+					},
+					{
+						name:"待退款",
+						no_thing:"no_comment",
+						msg:"你还没有待评价订单",
+						key:"refunding",
 						list:[]
 					}
 				],
@@ -80,6 +95,9 @@
 			this.getHotList()
 		},
 		computed: {
+			...mapState({
+				userInfo:state=>state.user.userInfo
+			}),
 			key() {
 				return this.tabBars[this.tabIndex].key
 			}
@@ -91,33 +109,29 @@
 			// 获取订单列表
 			getOrderList(){
 				let index = this.tabIndex
-				this.$H.post('/order/'+this.key,{},{
+				this.$H.post('/order/order/list/'+this.key,{
+					userId:this.userInfo.id
+				},{
 					token:true
 				}).then(res=>{
-					this.tabBars[index].list = res.map(item=>{
-						let order_items = item.order_items.map(v=>{
-							let attrs = []
-							if(v.skus_type === 1 && v.goods_skus && v.goods_skus.skus){
-								let skus = v.goods_skus.skus
-								for (let k in skus) {
-									attrs.push(skus[k].value)
-								}
-							}
+					
+					console.log(res)
+					this.tabBars[index].list = res.list.map(item=>{
+						let order_items = item.orderItems.map(v=>{
 							return {
-								id:v.goods_id,
-								cover:v.goods_item.cover,
-								title:v.goods_item.title,
-								pprice:v.price,
-								attrs:attrs.join(','),
-								num:v.num
+								id:v.id,
+								cover:v.product.cover,
+								title:v.product.title,
+								pprice:v.productPrice,
+								num:v.productNum
 							}
 						})
 						return {
 							id:item.id,
-							create_time:item.create_time,
+							create_time:item.createTime,
 							status:this.$U.formatStatus(item),
 							order_items:order_items,
-							total_price:item.total_price
+							total_price:item.totalPrice
 						}
 					})
 				})

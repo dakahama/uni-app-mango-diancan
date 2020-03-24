@@ -13,7 +13,7 @@
 				{{address.phone}}
 			</view>
 			<view class="text-light-muted font-md">
-				{{path}}
+				{{address.address}}{{address.detail}}
 			</view>
 		</view>
 		<divider></divider>
@@ -36,12 +36,6 @@
 			</view>
 		</uni-list-item>
 		<uni-list-item>
-			<text class="font-md text-light-muted">优惠券</text>
-			<view slot="right" class="font-md text-light-muted">
-				{{coupon}}
-			</view>
-		</uni-list-item>
-		<uni-list-item>
 			<text class="font-md main-text-color">实际付款</text>
 			<view slot="right" class="font-md text-light-muted">
 				<price>{{total_price}}</price>
@@ -58,13 +52,13 @@
 		<card v-if="extra" headTitle="退款相关">
 			<uni-list-item title="申请退款">
 				<view slot="right" class="font-md text-light-muted">
-					{{extra.refund_reason}}
+					{{extra}}
 				</view>
 			</uni-list-item>
 		</card>
 		
-		<view v-if="status === '待支付' || status === '待发货' || status === '待收货'" style="height: 100rpx;"></view>
-		<view v-if="status === '待支付' || status === '待发货' || status === '待收货'" class="bg-white position-fixed bottom-0 left-0 right-0 d-flex a-center j-end px-3" style="height: 100rpx;">
+		<view v-if="status === '待支付' || status === '待发货' || status === '待收货' || status === '待评价'" style="height: 100rpx;"></view>
+		<view v-if="status === '待支付' || status === '待发货' || status === '待收货' || status === '待评价' " class="bg-white position-fixed bottom-0 left-0 right-0 d-flex a-center j-end px-3" style="height: 100rpx;">
 			<template v-if="status === '待支付'">
 				<common-button @click="openPayMethods">去支付</common-button>
 				<common-button @click="closeOrder">取消订单</common-button>
@@ -74,8 +68,13 @@
 				<common-button @click="applyRefund">申请退款</common-button>
 			</template>
 			<template v-else-if="status === '待收货'">
-				<common-button @click="openLogistics">查看物流</common-button>
+				<common-button @click="openLogistics">快递员信息</common-button>
+				<common-button @click="applyRefund">申请退款</common-button>
 				<common-button @click="received">确认收货</common-button>
+			
+			</template>
+			<template v-else-if="status === '待评价'">
+				<common-button>去评价</common-button>
 			</template>
 		</view>
 		
@@ -100,14 +99,11 @@
 		},
 		data() {
 			return {
-				id: 0,
+				id: "",
 				no: "",
 				address: {
-					province: "",
-					city: "",
-					district: "",
 					address: "",
-					zip: 0,
+					detail: "",
 					name: "",
 					phone: "",
 				},
@@ -123,9 +119,9 @@
 				update_time: "",
 				reviewed: 0,
 				order_items: [],
-				couponUserItem: [],
 				end_time:0,
-				timeDown:''
+				timeDown:'',
+				orderStatus:0
 			}
 		},
 		computed: {
@@ -137,28 +133,12 @@
 				})
 				return p.toFixed(2)
 			},
-			path() {
-				let { province,city,district,address} = this.address
-				return  `${province} ${city} ${district} ${address}`
-			},
 			// 订单状态
 			status(){
 				return this.$U.formatStatus({
-					paid_time:this.paid_time,
-					refund_status:this.refund_status,
-					ship_status:this.ship_status
+					status:this.orderStatus,
+					refundStatus:this.refund_status
 				})
-			},
-			coupon(){
-				if(Array.isArray(this.couponUserItem) && this.couponUserItem.length === 0){
-					return '未使用'
-				}
-				let {type,value} = this.couponUserItem.coupon
-				if(type === 0){
-					return '-￥'+value
-				} else {
-					return '打'+value+'折'
-				}
 			},
 			timeDownText(){
 				let msg = ''
@@ -175,13 +155,15 @@
 					case '退款中':
 					return '等待商家审核'
 						break;
-					case '已签收':
+					case '已完成':
 					return '订单已签收'
 						break;
 				}
+				/*
 				if(msg !== '' && this.timeDown !== ''){
 					return `还差 ${this.timeDown} 自动${msg}`
 				} 
+				*/
 				return ''
 			}
 		},
@@ -231,47 +213,48 @@
 				}
 			},
 			getData(){
-				this.$H.get('/order/'+this.id,{},{
+				this.$H.get('/order/order/get/'+this.id,{},{
 					token:true
 				}).then(res=>{
 					console.log(res);
-					this.end_time = res.end_time ? res.end_time : 0
+					this.end_time = res.updateTime ? res.updateTime : 0
 					this.no = res.no
 					this.address = res.address
-					this.total_price= res.total_price
+					this.total_price= res.totalPrice
 					this.remark= res.remark
-					this.paid_time= res.paid_time
-					this.payment_method= res.payment_method
-					this.payment_no= res.payment_no
-					this.refund_status = res.refund_status
-					this.ship_status= res.ship_status
+					this.paid_time= res.paidTime
+					this.payment_method= res.paymentMethod
+					this.payment_no= res.paymentNo
+					this.refund_status = res.refundStatus
+					this.ship_status= res.shipStatus
 					this.extra= res.extra
-					this.create_time= res.create_time
-					this.update_time= res.update_time
+					this.create_time= res.createTime
+					this.update_time= res.updateTime
 					this.reviewed= res.reviewed
+					this.orderStatus= res.status
 					// 整理商品列表数据
 					let order_items = res.orderItems.map(v=>{
-						let attrs = []
-						if(v.skus_type === 1 && v.goodsSkus && v.goodsSkus.skus){
-							let skus = v.goodsSkus.skus
-							for (let k in skus) {
-								attrs.push(skus[k].value)
-							}
-						}
 						return {
-							id:v.goods_id,
-							cover:v.goodsItem.cover,
-							title:v.goodsItem.title,
-							pprice:v.price,
-							attrs:attrs.join(','),
-							num:v.num
+							id:v.productId,
+							cover:v.product.cover,
+							title:v.product.title,
+							pprice:v.productPrice,
+							num:v.productNum,
+							desci:v.product.desci
 						}
 					})
 					// 开启定时器
 					this.openTimeDown()
 					this.order_items= order_items
-					this.couponUserItem= res.couponUserItem
+					 
 				})
+			},
+			openLogistics(){
+				uni.navigateTo({
+					url: '/pages/logistics-detail/logistics-detail?detail='+JSON.stringify({
+						id:this.id
+					})
+				});
 			},
 			// 去支付
 			openPayMethods(){
@@ -293,17 +276,15 @@
 								title: '取消订单中...',
 								mask: false
 							});
-							this.$H.post('/closeorder/'+this.id,{},{
+							this.$H.post('/order/order/close/'+this.id,{},{
 								token:true
 							}).then(res=>{
 								uni.hideLoading()
-								uni.navigateBack({
-									delta: 1
-								});
 								uni.showToast({
 									title: '取消订单成功',
 									icon: 'none'
 								});
+								this.$emit('update')
 							}).catch(err=>{
 								uni.hideLoading()
 							})
@@ -319,14 +300,6 @@
 					})
 				});
 			},
-			// 查看物流
-			openLogistics(){
-				uni.navigateTo({
-					url: '/pages/logistics-detail/logistics-detail?detail='+JSON.stringify({
-						id:this.id
-					})
-				});
-			},
 			// 确认收货
 			received(){
 				uni.showModal({
@@ -337,17 +310,15 @@
 								title: '确认收货中...',
 								mask: false
 							});
-							this.$H.post('/order/'+this.id+'/received',{},{
+							this.$H.get('/order/order/received/'+this.item.id,{},{
 								token:true
 							}).then(res=>{
 								uni.hideLoading()
-								uni.navigateBack({
-									delta: 1
-								});
 								uni.showToast({
 									title: '确认收货成功',
 									icon: 'none'
 								});
+								this.$emit('update')
 							}).catch(err=>{
 								uni.hideLoading()
 							})

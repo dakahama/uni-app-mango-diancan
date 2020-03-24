@@ -212,6 +212,12 @@
 				"navigationBarTitleText":"发票"
 			}
         }
+		,{
+		    "path" : "pages/logistics-detail/logistics-detail",
+		    "style" : {
+				"navigationBarTitleText":"快递员信息"
+			}
+		}
         ,{
             "path" : "pages/login/login",
             "style" : {

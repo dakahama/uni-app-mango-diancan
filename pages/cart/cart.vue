@@ -7,8 +7,7 @@
 		<!-- 购物车为空 -->
 		<view class="py-5 d-flex a-center j-center bg-white" v-if="disableSelectAll">
 			<view class="iconfont icon-gouwuche text-light-muted" style="font-size: 50upx;"></view>
-			<text class="text-light-muted mx-2">购物车还是为空</text>
-			<view class="px-2 py-1 border border-light-secondary rounded" hover-class="bg-light-secondary">去逛逛</view>
+			<text class="text-light-muted mx-2">购物车为空</text>
 		</view>
 
 		<!-- 购物车商品列表 -->

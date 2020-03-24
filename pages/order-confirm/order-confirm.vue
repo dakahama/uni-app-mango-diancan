@@ -9,10 +9,10 @@
 					<view class="font-weight font-md d-flex a-center font-lg">
 						{{path.name}} {{path.phone}}
 						<view class="border border-white rounded px-1 font ml-2"
-						v-if="path.isdefault">默认</view>
+						v-if="path.status === 1">默认</view>
 					</view>
 					<view class="font">
-						{{path.province}} {{path.city}} {{path.district}} {{path.address}}
+						{{path.address}} {{path.detail}}
 					</view>
 				</template>
 				<template v-else>
@@ -44,26 +44,43 @@
 					</view>
 				</uni-list-item>
 				<uni-list-item title="运费" :showArrowIcon="false">
-					<view slot="rightContent">包邮</view>
+					<view slot="rightContent">无</view>
 				</uni-list-item>
+				<uni-list-item title="用户等级">
+					<view slot="rightContent" :class="userInfo.userLevel.id > 1 ? 'main-text-color' : 'text-light-muted'">
+						<text v-if="userInfo.userLevel.id > 1">{{userInfo.userLevel.name}}</text>
+						<text v-else>{{userInfo.userLevel.name}}</text>
+					</view>
+				</uni-list-item>
+				<uni-list-item title="用户折扣">
+					<view slot="rightContent" :class="userInfo.userLevel.id > 1 ? 'main-text-color' : 'text-light-muted'">
+						<text v-if="userInfo.userLevel.id > 1">{{userInfo.userLevel.discount}}折</text>
+						<text v-else>无折扣</text>
+					</view>
+				</uni-list-item>
+				<!--
 				<uni-list-item title="优惠券" @click="openCoupon">
 					<view slot="rightContent" :class="couponCount > 0 ? 'main-text-color' : 'text-light-muted'">
 						<text v-if="coupon.id > 0">{{coupon.type === 0 ? '-'+coupon.value+'元' : coupon.value+'折'}}</text>
 						<text v-else>{{couponCount === 0 ? '无可用' : couponCount + '张可用'}}</text>
 					</view>
 				</uni-list-item>
+				-->
 				<uni-list-item :showArrowIcon="false">
 					<text class="main-text-color">小计</text>
 					<view slot="rightContent">
 						<price>{{price}}</price>
 					</view>
 				</uni-list-item>
+				
+				
+				<!--
 				<divider></divider>
 				<uni-list-item title="发票" extraWidth="40%"
 				@click="openOrderInvoice">
 					<view slot="rightContent">电子发票-个人</view>
 				</uni-list-item>
-				
+				-->
 			</view>
 		</view>
 		
@@ -109,7 +126,8 @@
 		},
 		computed: {
 			...mapState({
-				list:state=>state.cart.list
+				list:state=>state.cart.list,
+				userInfo:state=>state.user.userInfo
 			}),
 			...mapGetters([
 				'defaultPath',
@@ -123,6 +141,15 @@
 			},
 			// 最终价格
 			price(){
+				
+				if(this.userInfo.userLevel.id == 1){
+					
+					return this.totalPrice
+				}
+				
+				
+				return (this.totalPrice * (this.userInfo.userLevel.discount/100)).toFixed(2)
+				
 				// 没有优惠券
 				if(this.coupon.id === 0){
 					return this.totalPrice
@@ -131,6 +158,9 @@
 					return this.totalPrice - this.coupon.value
 				}
 				return (this.totalPrice * (this.coupon.value/10)).toFixed(2)
+				
+				
+				
 			}
 		},
 		onLoad(e) {
@@ -178,11 +208,13 @@
 					url: '../user-address/user-address?type=choose'
 				});
 			},
+			/*
 			openOrderInvoice(){
 				uni.navigateTo({
 					url: '../order-invoice/order-invoice'
 				});
 			},
+			*/
 			// 下单，支付
 			openPayMethods(){
 				// 防止重复下单
@@ -194,30 +226,52 @@
 						icon: 'none'
 					});
 				}
+				
+				this.goodsList.map(res=>{
+					return res.productId
+				})
+				/*
+				let productIds = this.goodsList.map(res=>{
+					return res.productId
+				})
+				*/
+				//console.log(this.goodsList)
+				
 				let options = {
 					user_addresses_id:this.path.id,
-					items:this.items.join(',')
+					cartIds:this.items,
+					userId:this.userInfo.id
+					//productIds:productIds
 				}
 				// 是否选择优惠券
 				if(this.coupon.id > 0){
 					options.coupon_user_id = this.coupon.id
 				}
 				this.loading = true
-				this.$H.post('/order',options,{
-					token:true
+				this.$H.post('/order/create',options,{
+					token:true,
+					header:{
+						'Content-Type':'application/json;charset=UTF-8'
+					},
 				}).then(res=>{
+					
+					console.log(res)
+					
 					this.loading = false
 					// 跳转到支付页面
 					uni.navigateTo({
 						url: '../pay-methods/pay-methods?detail='+JSON.stringify({
 							id:res.id,
-							price:res.total_price
+							price:res.finalPrice
 						})
 					});
+					
 					// 保存订单id
 					this.order_id = res.id
 					// 通知购物车更新数据
 					uni.$emit('updateCart')
+				
+				
 				}).catch(err=>{
 					this.loading = false
 					console.log(err);
@@ -227,6 +281,7 @@
 					});
 				})
 			},
+			/*
 			// 选择优惠券
 			openCoupon(){
 				uni.navigateTo({
@@ -250,6 +305,7 @@
 					});
 				})
 			}
+			*/
 		}
 	}
 </script>

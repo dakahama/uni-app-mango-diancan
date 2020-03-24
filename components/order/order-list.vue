@@ -18,6 +18,7 @@
 				共{{item.order_items.length}}件商品，合计：￥{{item.total_price}}
 			</text>
 		</view>
+		
 		<view class="d-flex j-end a-center px-2 pb-2">
 			<template v-if="item.status === '待支付'">
 				<common-button @click="openPayMethods">去支付</common-button>
@@ -28,12 +29,21 @@
 				<common-button @click="applyRefund">申请退款</common-button>
 			</template>
 			<template v-else-if="item.status === '待收货'">
+				<common-button @click="openLogistics">快递员信息</common-button>
+				<common-button @click="applyRefund">申请退款</common-button>
 				<common-button @click="received">确认收货</common-button>
+			
 			</template>
+			<template v-else-if="item.status === '待评价'">
+				<common-button>去评价</common-button>
+			</template>
+			
 			<template v-else>
 				<common-button @click="openDetail">查看详情</common-button>
 			</template>
 		</view>
+	
+	
 	</view>
 </template>
 
@@ -70,7 +80,7 @@
 								title: '取消订单中...',
 								mask: false
 							});
-							this.$H.post('/closeorder/'+this.item.id,{},{
+							this.$H.post('/order/order/close/'+this.item.id,{},{
 								token:true
 							}).then(res=>{
 								uni.hideLoading()
@@ -84,6 +94,13 @@
 							})
 						}
 					}
+				});
+			},
+			openLogistics(){
+				uni.navigateTo({
+					url: '/pages/logistics-detail/logistics-detail?detail='+JSON.stringify({
+						id:this.item.id
+					})
 				});
 			},
 			// 申请退款
@@ -104,7 +121,7 @@
 								title: '确认收货中...',
 								mask: false
 							});
-							this.$H.post('/order/'+this.item.id+'/received',{},{
+							this.$H.get('/order/order/received/'+this.item.id,{},{
 								token:true
 							}).then(res=>{
 								uni.hideLoading()

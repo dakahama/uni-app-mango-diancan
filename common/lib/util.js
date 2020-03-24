@@ -16,34 +16,47 @@ export default {
 		if(!order){
 			return ''
 		}
+		
 		// 未支付
-		if(!order.paid_time){
+		if(order.status === 1){
 			return "待支付"
 		}
-		// 退款情况
-		if(order.refund_status !== 'pending'){
-			switch (order.refund_status){
-				case 'applied':
-				return '退款中'
-					break;
-				case 'success':
-				return '退款成功'
-					break;
-				case 'failed':
-				return '退款失败'
-					break;
-			} 
+		// 未发货
+		if(order.status === 2){
+			return "待发货"
 		}
-		switch (order.ship_status){
-			case 'pending':
-			return '待发货'
-				break;
-			case 'delivered':
+		
+		
+		if(order.status === 3){
 			return '待收货'
-				break;
-			case 'received':
-			return '已签收'
-				break;
 		}
+		
+		
+		if(order.status === 4){
+			return '待评价'
+		}
+		
+		if(order.status === 5){
+			if(order.refundStatus !== 'pending'){
+				switch (order.refundStatus){
+					case 'success':
+					return '退款成功'
+						break;
+					case 'failed':
+					return '退款失败'
+						break;
+				}
+			}
+			return '已完成'
+		}
+		
+		if(order.status === 6){
+			return '已取消'
+		}
+		
+		if(order.status === 7){
+			return '退款中'
+		}
+		
 	},
 }
