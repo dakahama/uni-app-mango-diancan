@@ -3,6 +3,7 @@
 		{
 			"path": "pages/index/index",
 			"style": {
+				"enablePullDownRefresh":true,
 				"app-plus": {
 					"scrollIndicator":"none",
 					"titleNView": {
@@ -39,6 +40,7 @@
 		{
 			"path":"pages/class/class",
 			"style": {
+				"enablePullDownRefresh":true,
 				"app-plus":{
 					"bounce":"none"
 				},
@@ -50,7 +52,18 @@
 			"style": {
 				"enablePullDownRefresh":true,
 				"app-plus":{
-					"titleNView":false,
+					"titleNView": {
+						"titleText":"购物车",
+						"buttons": [
+							{
+								"color":"#989898",
+								"colorPressed":"#FD6801",
+								"float":"right",
+								"fontSize":"15px",
+								"text":	"编辑"			
+							}
+						]
+					},
 					"scrollIndicator":"none",
 					"bounce":"none"
 				}
@@ -146,7 +159,7 @@
         ,{
             "path" : "pages/user-set/user-set",
             "style" : {
-				"navigationBarTitleText":"用户设置"
+				"navigationBarTitleText":"更多设置"
 			}
         }
         ,{
@@ -227,7 +240,17 @@
 					"titleNView":false
 				}
 			}
-        }
+        },
+		{
+		    "path" : "pages/login/login-vail",
+		    "style" : {
+				"app-plus":{
+					"bounce":"none",
+					"scrollIndicator":"none",
+					"titleNView":false
+				}
+			}
+		}
         ,{
             "path" : "pages/msg-list/msg-list",
             "style" : {
@@ -278,7 +301,7 @@
         ,{
             "path" : "pages/about/about",
             "style" : {
-				"navigationBarTitleText":"关于xxx商城"
+				"navigationBarTitleText":"芒果点餐"
 			}
         }
         ,{
@@ -293,6 +316,20 @@
             "style" : {
 				"navigationBarTitleText":"申请退款"
 			}
+        }
+        ,{
+            "path" : "pages/order/comment",
+            "style" : {
+				"navigationBarTitleText":"商品评价"
+			}
+        }
+        ,{
+            "path" : "pages/user-info/user-info-edit",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/login/register",
+            "style" : {}
         }
     ],
 	"globalStyle": {

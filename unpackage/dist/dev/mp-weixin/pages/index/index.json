@@ -1,4 +1,5 @@
 {
+  "enablePullDownRefresh": true,
   "usingComponents": {
     "swiper-image": "/components/index/swiper-image",
     "index-nav": "/components/index/index-nav",

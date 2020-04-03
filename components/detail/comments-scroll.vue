@@ -7,7 +7,7 @@
 				
 				<view class="d-flex a-center mb-1">
 					<image :src="item.userpic" 
-					mode="widthFix" style="width: 70rpx;height: 70rpx;"
+					style="height: 70rpx;width: 70rpx;"
 					class="rounded-circle"></image>
 					<view class="ml-2">
 						<text class="font-md line-h">

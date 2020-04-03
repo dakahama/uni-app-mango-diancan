@@ -8,6 +8,15 @@ export default {
 		userInfo:{}
 	},
 	mutations:{
+		updateUser(state,user){
+			state.userInfo.avatar = user.avatar
+			state.userInfo.username = user.username
+			let data = {
+				user:state.userInfo,
+				token:state.token
+			}
+			uni.setStorageSync('userInfo',JSON.stringify(data))
+		},
 		// 初始化登录状态
 		initUser(state){
 			let userInfo = uni.getStorageSync('userInfo')
@@ -21,6 +30,7 @@ export default {
 		},
 		// 登录
 		login(state,userinfo){
+			console.log(userinfo)
 			state.userInfo = userinfo.user
 			state.loginStatus = true
 			state.token = userinfo.token
@@ -33,7 +43,6 @@ export default {
 			state.loginStatus = false
 			state.token = null
 			uni.removeStorageSync('userInfo')
-			
 		}
 	}
 }

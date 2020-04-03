@@ -22,10 +22,14 @@ var _store = _interopRequireDefault(__webpack_require__(/*! ./store */ 15));
 
 
 
-var _request = _interopRequireDefault(__webpack_require__(/*! @/common/lib/request.js */ 20));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};var ownKeys = Object.keys(source);if (typeof Object.getOwnPropertySymbols === 'function') {ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {return Object.getOwnPropertyDescriptor(source, sym).enumerable;}));}ownKeys.forEach(function (key) {_defineProperty(target, key, source[key]);});}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}_vue.default.prototype.$store = _store.default;_vue.default.config.productionTip = false; // 引入全局组件
-var divider = function divider() {return __webpack_require__.e(/*! import() | components/common/divider */ "components/common/divider").then(__webpack_require__.bind(null, /*! @/components/common/divider.vue */ 206));};var card = function card() {return __webpack_require__.e(/*! import() | components/common/card */ "components/common/card").then(__webpack_require__.bind(null, /*! @/components/common/card.vue */ 213));};var price = function price() {return __webpack_require__.e(/*! import() | components/common/price */ "components/common/price").then(__webpack_require__.bind(null, /*! @/components/common/price.vue */ 218));};var commonList = function commonList() {return __webpack_require__.e(/*! import() | components/common/common-list */ "components/common/common-list").then(__webpack_require__.bind(null, /*! @/components/common/common-list.vue */ 223));};var loading = function loading() {return __webpack_require__.e(/*! import() | components/common/loading */ "components/common/loading").then(__webpack_require__.bind(null, /*! @/components/common/loading.vue */ 228));};_vue.default.prototype.$H = _request.default;
 
 
+
+
+var _request = _interopRequireDefault(__webpack_require__(/*! @/common/lib/request.js */ 18));
+
+var _util = _interopRequireDefault(__webpack_require__(/*! @/common/lib/util.js */ 19));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};var ownKeys = Object.keys(source);if (typeof Object.getOwnPropertySymbols === 'function') {ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {return Object.getOwnPropertyDescriptor(source, sym).enumerable;}));}ownKeys.forEach(function (key) {_defineProperty(target, key, source[key]);});}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}_vue.default.prototype.$store = _store.default;_vue.default.config.productionTip = false; // 引入全局组件
+var divider = function divider() {return __webpack_require__.e(/*! import() | components/common/divider */ "components/common/divider").then(__webpack_require__.bind(null, /*! @/components/common/divider.vue */ 231));};var card = function card() {return __webpack_require__.e(/*! import() | components/common/card */ "components/common/card").then(__webpack_require__.bind(null, /*! @/components/common/card.vue */ 238));};var price = function price() {return __webpack_require__.e(/*! import() | components/common/price */ "components/common/price").then(__webpack_require__.bind(null, /*! @/components/common/price.vue */ 243));};var commonList = function commonList() {return __webpack_require__.e(/*! import() | components/common/common-list */ "components/common/common-list").then(__webpack_require__.bind(null, /*! @/components/common/common-list.vue */ 248));};var loading = function loading() {return __webpack_require__.e(/*! import() | components/common/loading */ "components/common/loading").then(__webpack_require__.bind(null, /*! @/components/common/loading.vue */ 253));};var cuCustom = function cuCustom() {return __webpack_require__.e(/*! import() | common/colorui/components/cu-custom */ "common/colorui/components/cu-custom").then(__webpack_require__.bind(null, /*! @/common/colorui/components/cu-custom.vue */ 260));};_vue.default.component('cu-custom', cuCustom);_vue.default.prototype.$H = _request.default;_vue.default.prototype.$U = _util.default;
 _vue.default.prototype.navigateTo = function (options) {
   if (!_store.default.state.user.loginStatus) {
     uni.showToast({
@@ -134,7 +138,8 @@ __webpack_require__.r(__webpack_exports__);
 {
   // 全局变量
   globalData: {
-    text: "" },
+    text: "",
+    url: "192.168.1.103:8085" },
 
   onUniNViewMessage: function onUniNViewMessage(e) {
     var data = e.data;
@@ -145,8 +150,15 @@ __webpack_require__.r(__webpack_exports__);
       uni.$emit('index', data);
     }
   },
-  onLaunch: function onLaunch() {
+  onLaunch: function onLaunch() {var _this = this;
     this.$store.commit('initUser');
+    // 更新购物车数据
+    this.$store.dispatch('updateCartList');
+    // 监听购物车更新
+    uni.$on('updateCart', function () {
+      _this.$store.dispatch('updateCartList');
+    });
+    //this.$store.dispatch('updateCartList')
   },
   onShow: function onShow() {
     console.log('App Show');

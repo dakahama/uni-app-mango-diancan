@@ -8,7 +8,7 @@
 			<block v-for="(item,index) in resdata" :key="index">
 				<swiper-item @tap="event(item,index)">
 					<view class="swiper-box">
-						<image :src="item.cover" 
+						<image :src="item" 
 						lazy-load
 						:style="getStyle"
 						mode="scaleToFill"></image>
@@ -38,7 +38,7 @@
 				return `height: ${this.height}rpx`
 			},
 			getUrls() {
-				return this.resdata.map( v => v.cover)
+				return this.resdata.map( v => v)
 			}
 		},
 		methods: {
@@ -50,7 +50,6 @@
 						indicator:"default"
 					})
 				}
-				console.log('点击了轮播图'+item.index)
 			}
 		}
 	}

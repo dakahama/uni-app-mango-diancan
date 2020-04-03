@@ -1,4 +1,19 @@
 {
+  "enablePullDownRefresh": true,
+  "titleNView": {
+    "titleText": "购物车",
+    "buttons": [
+      {
+        "color": "#989898",
+        "colorPressed": "#FD6801",
+        "float": "right",
+        "fontSize": "15px",
+        "text": "编辑"
+      }
+    ]
+  },
+  "scrollIndicator": "none",
+  "bounce": "none",
   "usingComponents": {
     "price": "/components/common/price",
     "uni-nav-bar": "/components/uni-ui/uni-nav-bar/uni-nav-bar",

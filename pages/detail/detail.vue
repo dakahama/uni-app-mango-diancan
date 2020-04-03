@@ -21,10 +21,13 @@
 		-->
 		<commentsScroll :comments="comments" :goodId="detail.id"></commentsScroll>
 		
+		
 		<!--详细页面 富文本-->
+		<card headTitle="图文详情"></card>
+		
+		<!-- 商品详情 -->
 		<view class="py-4">
-			<wxParse className="uparse" :content="content" @preview="preview" @navigate="navigate">
-			</wxParse>
+			<rich-text :nodes="content"></rich-text>
 		</view>
 		
 		<!--底部按钮-->
@@ -39,13 +42,13 @@
 	import uniListItem from '@/components/uni-ui/uni-list-item/uni-list-item.vue'
 	import commentsScroll from '@/components/detail/comments-scroll.vue';
 	import bottomBtn from "@/components/detail/bottom-btn.vue"
-	import wxParse from '@/components/uni-ui/uParse/src/wxParse.vue';
+	import uParse from "@/components/uni-ui/uParse/src/wxParse.vue"
 	import wacradioGroup from '@/components/common/radio-group.vue'
 	import uniNumberBox from '@/components/uni-ui/uni-number-box/uni-number-box.vue'
 	
 	export default {
 		components:{
-			swiperImage,baseInfo,uniListItem,commentsScroll,wxParse,bottomBtn,
+			swiperImage,baseInfo,uniListItem,commentsScroll,uParse,bottomBtn,
 			wacradioGroup,uniNumberBox
 		},
 		data() {
@@ -92,11 +95,8 @@
 					uni.setNavigationBarTitle({
 						title:product.title
 					})
-					this.banners = product.imagesObject.map(v=>{
-						return {
-							cover:v
-						}
-					})
+					
+					this.banners = product.imagesObject
 					
 					this.detail = {
 						id:product.id,

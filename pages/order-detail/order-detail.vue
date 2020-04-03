@@ -73,9 +73,12 @@
 				<common-button @click="received">确认收货</common-button>
 			
 			</template>
+			
 			<template v-else-if="status === '待评价'">
-				<common-button>去评价</common-button>
+				<common-button @click="finish">完结订单</common-button>
 			</template>
+		
+		
 		</view>
 		
 	</view>
@@ -216,7 +219,7 @@
 				this.$H.get('/order/order/get/'+this.id,{},{
 					token:true
 				}).then(res=>{
-					console.log(res);
+					//console.log(res);
 					this.end_time = res.updateTime ? res.updateTime : 0
 					this.no = res.no
 					this.address = res.address
@@ -236,6 +239,7 @@
 					let order_items = res.orderItems.map(v=>{
 						return {
 							id:v.productId,
+							productId:v.productId,
 							cover:v.product.cover,
 							title:v.product.title,
 							pprice:v.productPrice,
@@ -264,6 +268,31 @@
 						id:this.id,
 						price:this.total_price
 					})
+				});
+			},
+			finish(){
+				uni.showModal({
+					content: '是否要完成该订单？',
+					success: (res)=>{
+						if (res.confirm) {
+							uni.showLoading({
+								title: '完成订单中...',
+								mask: false
+							});
+							this.$H.post('/order/order/finish/'+this.id,{},{
+								token:true
+							}).then(res=>{
+								uni.hideLoading()
+								uni.showToast({
+									title: '完成订单成功',
+									icon: 'none'
+								});
+								this.$emit('update')
+							}).catch(err=>{
+								uni.hideLoading()
+							})
+						}
+					}
 				});
 			},
 			// 取消订单
@@ -325,7 +354,7 @@
 						}
 					}
 				});
-			},
+			}
 		}
 	}
 </script>

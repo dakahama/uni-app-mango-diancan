@@ -1,14 +1,20 @@
 <template>
 	<view>
-		<card headTitle="账号管理" bodyStyle="background:#FFFFFF"
-		v-show="loginStatus">
+		<card headTitle="账号管理" bodyStyle="background:#FFFFFF" v-if="loginStatus">
 			<uni-list-item title="个人资料" @click="navigate('user-info')"></uni-list-item>
 			<uni-list-item title="收货地址" @click="navigate('user-address')"></uni-list-item>
 		</card>
 		<card headTitle="关于" bodyStyle="background:#FFFFFF">
 			<uni-list-item title="关于应用" @click="navigate('about')"></uni-list-item>
 		</card>
-		<view class="p-3">
+		
+		<view class="p-3" v-if="!loginStatus">
+			<view class="text-center w-100 main-bg-color text-white font-md rounded py-2" 
+			hover-class="main-bg-hover-color" @click="navigate('login')">
+				登 录 
+			</view>
+		</view>
+		<view class="p-3" v-else>
 			<view class="text-center w-100 main-bg-color text-white font-md rounded py-2" 
 			hover-class="main-bg-hover-color" @click="logoutEvent">
 				退 出
@@ -32,21 +38,24 @@
 		computed:{
 			...mapState({
 				token:state=>state.user.token,
-				loginStatus:state=>state.user.loginStatus
+				loginStatus:state=>state.user.loginStatus,
+				userInfo:state=>state.user.userInfo
 			})
 		}
 		,
 		methods: {
 			...mapMutations(['logout','clearCart']),
+			
 			logoutEvent(){
 				
-				this.$H.post('/user/user/logout',{},{
+				this.$H.post('/user/user/logout',{
+					id:this.userInfo.id
+				},{
 					token:true,
 					checkToken:true,
 					toast:false
 				}).then(res=>{
 					this.logout()
-					// 清空购物车
 					this.clearCart()
 					uni.showToast({
 						title:'退出成功',
@@ -56,8 +65,6 @@
 						delta: 1
 					});
 				})
-				
-				
 				
 			},
 			

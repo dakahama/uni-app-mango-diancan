@@ -1,4 +1,5 @@
 {
+  "enablePullDownRefresh": true,
   "scrollIndicator": "none",
   "titleNView": {
     "searchInput": {
@@ -20,8 +21,11 @@
     ]
   },
   "usingComponents": {
+    "card": "/components/common/card",
     "divider": "/components/common/divider",
     "search-list": "/components/search/search-list",
-    "no-thing": "/components/common/no-thing"
+    "no-thing": "/components/common/no-thing",
+    "uni-drawer": "/components/uni-ui/uni-drawer/uni-drawer",
+    "zcm-radio-group": "/components/common/radio-group"
   }
 }

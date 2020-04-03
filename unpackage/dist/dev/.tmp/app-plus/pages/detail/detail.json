@@ -5,15 +5,13 @@
     "type": "transparent"
   },
   "usingComponents": {
-    "price": "/components/common/price",
     "card": "/components/common/card",
     "swiper-image": "/components/index/swiper-image",
     "base-info": "/components/detail/base-info",
     "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item",
     "comments-scroll": "/components/detail/comments-scroll",
-    "weixin-parse": "/components/uni-ui/uParse/src/wxParse",
+    "u-parse": "/components/uni-ui/uParse/src/wxParse",
     "bottom-btn": "/components/detail/bottom-btn",
-    "common-popup": "/components/common/common-popup",
     "wacradio-group": "/components/common/radio-group",
     "uni-number-box": "/components/uni-ui/uni-number-box/uni-number-box"
   }

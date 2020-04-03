@@ -12,6 +12,10 @@ import commonList from "@/components/common/common-list.vue"
 // 全局加载动画
 import loading from "@/components/common/loading.vue"
 
+import cuCustom from '@/common/colorui/components/cu-custom.vue'
+Vue.component('cu-custom',cuCustom)
+
+
 import $H from "@/common/lib/request.js"
 Vue.prototype.$H = $H
 import $U from '@/common/lib/util.js';

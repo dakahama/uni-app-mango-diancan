@@ -1,13 +1,28 @@
 <template>
 	<view>
+		<!-- 自定义导航 -->
+		<!-- #ifdef MP -->
+		<view class="d-flex a-center" style="height: 90rpx;">
+			<!-- 中间 -->
+			<input type="text" v-model="keyword" 
+			class="flex-1 bg-light rounded ml-3 px-2"
+			style="height: 65rpx;" placeholder="请输入搜索关键词"/>
+			<!-- 右边 -->
+			<view style="width: 85rpx;" class="d-flex a-center j-center"
+			@click="search">
+				搜索
+			</view>
+		</view>
+		<!-- #endif -->
 		<!-- 排序|筛选 -->
-		<view class="d-flex border-bottom border-top a-center bg-white" style="height: 100upx;">
+		<view class="d-flex border-top border-bottom a-center position-fixed left-0 right-0 bg-white" 
+		style="height: 100upx;z-index: 100;">
 			<view class="flex-1 d-flex a-center j-center"
 			v-for="(item,index) in screen.list" :key="index"
 			@tap="changeScreen(index)">
 				<text class="font-md" 
 				:class="screen.currentIndex === index ? 'main-text-color':'text-muted'">{{item.name}}</text>
-				<view>
+				<view v-show="index === 1">
 					<!-- line-h0 取消行高 -->
 					<view class="iconfont icon-paixu-shengxu line-h0"
 					:class="item.status === 1? 'main-text-color':'text-light-muted'"></view>
@@ -21,7 +36,7 @@
 				筛选
 			</view>
 		</view>
-		 
+		<view style="height: 100rpx;"></view>
 		<!-- 抽屉 -->
 		<uni-drawer :visible="showRigth" mode="right" @close="showRigth = false">
 			<card headTitle="服务" :headBorderBottom="false" :headTitleWeight="false">
@@ -145,6 +160,9 @@
 			// 请求数据
 			this.getData(false)
 		},
+		beforeDestroy() {
+			this.keyword = ''
+		},
 		methods: {
 			// 初始化搜索
 			initSearch(){
@@ -191,8 +209,8 @@
 			getData(refresh = false, callback = false){
 				let page = refresh ? 1 : this.page
 				
-				console.log(JSON.stringify(this.options))
-				console.log(JSON.stringify(this.condition))
+				//console.log(JSON.stringify(this.options))
+				//console.log(JSON.stringify(this.condition))
 				
 				this.$H.post('/product/product/search',{
 					title:this.keyword,
@@ -202,9 +220,9 @@
 					...this.condition
 				}).then(res=>{
 					
-					this.keyword = ""
+					//this.keyword = ""
 					
-					console.log(res)
+					//console.log(res)
 					let list = this.format(res.list)
 					this.list = refresh ? [...list]:[...this.list,...list]
 					
@@ -269,7 +287,7 @@
 				this.condition = {}
 				this.label.selected = 0
 				// 获取数据
-				this.getData()
+				this.getData(true)
 				
 			},
 			

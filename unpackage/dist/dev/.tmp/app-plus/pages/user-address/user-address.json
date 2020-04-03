@@ -1,5 +1,6 @@
 {
   "navigationBarTitleText": "收货地址",
+  "enablePullDownRefresh": true,
   "scrollIndicator": "none",
   "bounce": "none",
   "titleNView": {

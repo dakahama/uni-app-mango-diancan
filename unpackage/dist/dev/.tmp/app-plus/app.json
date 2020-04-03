@@ -8,7 +8,6 @@
     "pages/search/search-list",
     "pages/detail/detail",
     "pages/detail-comments/detail-comments",
-    "pages/cart/cart",
     "pages/user-set/user-set",
     "pages/user-info/user-info",
     "pages/user-address/user-address",
@@ -16,7 +15,9 @@
     "pages/order/order",
     "pages/order-confirm/order-confirm",
     "pages/order-invoice/order-invoice",
+    "pages/logistics-detail/logistics-detail",
     "pages/login/login",
+    "pages/login/login-vail",
     "pages/msg-list/msg-list",
     "pages/msg-detail/msg-detail",
     "pages/pay-methods/pay-methods",
@@ -26,7 +27,9 @@
     "pages/after-sale/after-sale",
     "pages/about/about",
     "pages/coupon/coupon",
-    "pages/order-refund/order-refund"
+    "pages/order-refund/order-refund",
+    "pages/order/comment",
+    "pages/user-info/user-info-edit"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -75,6 +78,7 @@
   "appname": "芒果点餐",
   "compilerVersion": "2.6.1",
   "usingComponents": {
+    "cu-custom": "/common/colorui/components/cu-custom",
     "divider": "/components/common/divider",
     "card": "/components/common/card",
     "price": "/components/common/price",

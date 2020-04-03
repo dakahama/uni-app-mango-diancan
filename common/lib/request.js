@@ -2,7 +2,7 @@ import $store from '@/store/index.js'
 export default {
 	// 全局配置
 	common:{
-		baseUrl:"http://localhost:8085",
+		baseUrl:"http://192.168.1.103:8085",
 		header:{
 			'Content-Type':'application/json;charset=UTF-8',
 			'Content-Type':'application/x-www-form-urlencoded'
@@ -21,9 +21,12 @@ export default {
 		options.method = options.method || this.common.method
 		options.dataType = options.dataType || this.common.dataType
 		
+		//console.log(options.header.token)
 		// token
+		
+		/*
 		if (options.token) {
-			options.header.token = $store.state.user.token
+			//options.header.token = $store.state.user.token
 			// 二次验证
 			if (options.checkToken && !options.header.token) {
 				uni.showToast({
@@ -35,10 +38,11 @@ export default {
 				});
 			}
 		}
-		
+		*/
 		// 请求
 		return new Promise((res,rej)=>{
 			// 请求之前... todo
+			
 			// 请求中...
 			uni.request({
 				...options,

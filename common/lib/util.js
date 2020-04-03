@@ -37,6 +37,11 @@ export default {
 		}
 		
 		if(order.status === 5){
+			
+			return '已完成'
+		}
+		
+		if(order.status === 6){
 			if(order.refundStatus !== 'pending'){
 				switch (order.refundStatus){
 					case 'success':
@@ -47,10 +52,6 @@ export default {
 						break;
 				}
 			}
-			return '已完成'
-		}
-		
-		if(order.status === 6){
 			return '已取消'
 		}
 		

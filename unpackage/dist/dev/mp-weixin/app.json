@@ -15,7 +15,9 @@
     "pages/order/order",
     "pages/order-confirm/order-confirm",
     "pages/order-invoice/order-invoice",
+    "pages/logistics-detail/logistics-detail",
     "pages/login/login",
+    "pages/login/login-vail",
     "pages/msg-list/msg-list",
     "pages/msg-detail/msg-detail",
     "pages/pay-methods/pay-methods",
@@ -25,7 +27,10 @@
     "pages/after-sale/after-sale",
     "pages/about/about",
     "pages/coupon/coupon",
-    "pages/order-refund/order-refund"
+    "pages/order-refund/order-refund",
+    "pages/order/comment",
+    "pages/user-info/user-info-edit",
+    "pages/login/register"
   ],
   "subPackages": [],
   "window": {
@@ -67,11 +72,11 @@
     ]
   },
   "usingComponents": {
+    "cu-custom": "/common/colorui/components/cu-custom",
     "divider": "/components/common/divider",
     "card": "/components/common/card",
     "price": "/components/common/price",
     "common-list": "/components/common/common-list",
     "loading": "/components/common/loading"
-  },
-  "sitemapLocation": "sitemap57.json"
+  }
 }

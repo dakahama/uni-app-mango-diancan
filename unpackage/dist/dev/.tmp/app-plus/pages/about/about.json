@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "关于xxx商城",
+  "navigationBarTitleText": "芒果点餐",
   "usingComponents": {
     "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item"
   }

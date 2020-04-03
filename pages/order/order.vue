@@ -120,10 +120,12 @@
 						let order_items = item.orderItems.map(v=>{
 							return {
 								id:v.id,
+								productId:v.product.id,
 								cover:v.product.cover,
 								title:v.product.title,
 								pprice:v.productPrice,
-								num:v.productNum
+								num:v.productNum,
+								reviewId:v.reviewId
 							}
 						})
 						return {

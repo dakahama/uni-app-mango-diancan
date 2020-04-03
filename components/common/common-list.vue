@@ -2,14 +2,13 @@
 	<!-- 372.5 5 372.5-->
 	<view style="width: 372.5upx;" @click="openDetail"
 	:style="index%2 === 0 ? 'border-right: 7upx solid #F5F5F5;':''">
-		<image :src="item.cover" mode="widthFix" lazy-load></image>
+		<image :src="item.cover" style="width: 372.5upx;height: 264upx;;" mode="widthFix" lazy-load></image>
 		<view class="p-1 pt-1">
 			<view class="font-md">{{item.title}}</view>
 			<text class="d-block font text-light-muted"
 			style="word-break: break-all;">{{item.desci}}</text>
 			<view class="d-flex my-1">
 				<price>{{item.price}}</price>
-				<view class="font-sm text-light-muted line-through ml-1 a-self-end line-h" >￥{{item.price}}</view>
 			</view>
 		</view>			
 	</view>

@@ -6,11 +6,10 @@
 			<uni-list-item @click="choose(item)">
 				<view class="text-secondary">
 					<view class="d-flex a-center">
-						<text class="main-text-color">{{item.name}}</text>
-						{{item.phone}}
-						
-						<text class="main-text-color"
+						<text class="mr-2" style="color: #007BFF;"
 						v-if="index === 0 && item.status === 1">[默认]</text>
+						<text class="main-text-color mr-2">{{item.name}}</text>
+						<text class="">{{item.phone}}</text>
 					</view>
 					<view>{{item.address}}</view>
 					<view>{{item.detail}}</view>

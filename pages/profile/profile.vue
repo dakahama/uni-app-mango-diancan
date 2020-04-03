@@ -12,43 +12,37 @@
 			style="height: 320rpx;"></image>
 			<view class="d-flex a-center position-absolute left-0 right-0"
 			style="bottom: 50rpx;">
-				<image :src="userInfo.avatar ? userInfo.avatar : '../../static/userpic.png'"
+			
+			
+				<image v-if="userInfo.avatar" :src="userInfo.avatar" @click="navigate('user-info')"
+				style="width: 145rpx;height: 145rpx;border: 5rpx solid;" 
+				class="rounded-circle border-light ml-4"></image>
+				
+				<image v-else src="../../static/userpic.png" @click="openLogin"
 				style="width: 145rpx;height: 145rpx;border: 5rpx solid;" 
 				class="rounded-circle border-light ml-4"></image>
 				
 				<view class="ml-2 text-white font-md" @click="navigate('user-info')" v-if="userInfo.username">
 				{{userInfo.username}}
 				</view>
+				
 				<view class="ml-2 text-white font-md" v-else
 				@click="openLogin">登录/注册</view>
 				
-				
-				
-				<!--
-				<view class="d-flex a-center j-center a-self-end ml-auto pl-1 pr-1"
+				<view class="d-flex a-center j-center a-self-end ml-auto pl-1 pr-1" v-show="loginStatus"
 				style="height: 70rpx;background: #F0AD4E;color: #CC4A00;
 				border-top-left-radius: 40rpx;border-bottom-left-radius: 40rpx;">
 					<view class="line-h iconfont icon-huangguan mr-1"></view>
-					会员积分 1.99333
+					会员积分 {{userInfo.jifen}}
 				</view>
-				-->
 			</view>
 		</view>
 		<card >
 			<view slot="title" class="d-flex a-center j-sb w-100">
 				<text class="font-md font-weight">我的订单</text>
-				<view class="text-secondary ml-auto font" @click="navigate('order',true)">
+				<view class="text-secondary font ml-auto" 
+				@click="navigate('order',true)">
 					全部订单 <text class="iconfont icon-you font"></text>
-				</view>
-			</view>
-			<view class="d-flex a-center">
-				<view class="flex-1 d-flex flex-column a-center j-center py-3"
-				hover-class="bg-light-secondary"
-				v-for="(item,index) in orders" :key="index"
-				@click="openOrder(item)">
-					<view class="iconfont font-lg line-h"
-					:class="item.icon"></view>
-					<view>{{item.name}}</view>
 				</view>
 			</view>
 		</card>

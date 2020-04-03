@@ -1,5 +1,5 @@
 <template>
-	<view class="bg-white" @click.stop="openDetail">
+	<view class="bg-white">
 		<divider></divider>
 		<!-- 头部 -->
 		<view class="d-flex a-center p-2 border-bottom border-light-secondary">
@@ -9,7 +9,7 @@
 		<!-- 身体 -->
 		<view class="px-2">
 			<block v-for="(order,orderIndex) in item.order_items" :key="orderIndex">
-				<order-list-item :item="order" :index="orderIndex"></order-list-item>
+				<order-list-item :orderStatus="item.status" :item="order" :index="orderIndex"></order-list-item>
 			</block>
 		</view>
 		<!-- 底部 -->
@@ -29,21 +29,18 @@
 				<common-button @click="applyRefund">申请退款</common-button>
 			</template>
 			<template v-else-if="item.status === '待收货'">
-				<common-button @click="openLogistics">快递员信息</common-button>
+				<common-button @click="openLogistics">快递信息</common-button>
 				<common-button @click="applyRefund">申请退款</common-button>
 				<common-button @click="received">确认收货</common-button>
-			
 			</template>
 			<template v-else-if="item.status === '待评价'">
-				<common-button>去评价</common-button>
+				<common-button @click="finish">完结订单</common-button>
 			</template>
 			
-			<template v-else>
+			<template>
 				<common-button @click="openDetail">查看详情</common-button>
 			</template>
 		</view>
-	
-	
 	</view>
 </template>
 
@@ -142,6 +139,31 @@
 					url: '/pages/order-detail/order-detail?id='+this.item.id,
 				});
 			},
+			finish(){
+				uni.showModal({
+					content: '是否要完成该订单？',
+					success: (res)=>{
+						if (res.confirm) {
+							uni.showLoading({
+								title: '完成订单中...',
+								mask: false
+							});
+							this.$H.post('/order/order/finish/'+this.id,{},{
+								token:true
+							}).then(res=>{
+								uni.hideLoading()
+								uni.showToast({
+									title: '完成订单成功',
+									icon: 'none'
+								});
+								this.$emit('update')
+							}).catch(err=>{
+								uni.hideLoading()
+							})
+						}
+					}
+				});
+			}
 		}
 	}
 </script>

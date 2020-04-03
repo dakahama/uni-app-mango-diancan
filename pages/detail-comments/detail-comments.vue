@@ -22,8 +22,8 @@
 		
 		<view class="p-2 d-flex a-start border-bottom border-light-secondary"
 		v-for="(item,index) in list" :key="index">
-			<image :src="item.user.avatar" mode="widthFix"
-			style="width: 90rpx;height: 90rpx;" class="rounded flex-shrink"></image>
+			<image :src="item.user.avatar"
+			style="width: 90rpx;height: 90rpx;" class="rounded-circle flex-shrink"></image>
 			<view class="pl-2 flex-1">
 				<view class="d-flex a-center">
 					<text class="font-md text-primary font-weight">{{item.user.nickname}}</text>

@@ -1,4 +1,5 @@
 {
+  "enablePullDownRefresh": true,
   "usingComponents": {
     "uni-nav-bar": "/components/uni-ui/uni-nav-bar/uni-nav-bar",
     "uni-number-box": "/components/uni-ui/uni-number-box/uni-number-box",

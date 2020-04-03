@@ -1,4 +1,5 @@
 <template>
+	
 	<view class="d-flex border-top border-light-secondary animated fadeIn faster" style="height: 100%;box-sizing: border-box;">
 		<!--
 		<loading-plus v-if="beforeReady"></loading-plus>
@@ -30,6 +31,7 @@
 			</view>
 		</scroll-view>
 	</view>
+	
 </template>
 
 <script>
@@ -75,6 +77,9 @@
 		onReady() {
 			
 		},
+		onPullDownRefresh() {
+			this.getData()
+		},
 		methods: {
 			// 获取节点信息
 			getElInfo(obj = {}){
@@ -92,8 +97,10 @@
 				})
 			},
 			getData(){
-				
+				this.cate = []
+				this.list =  []
 				this.$H.get('/product/product/list').then(res=>{
+					uni.stopPullDownRefresh()
 					res.categories.forEach(v=>{
 						this.cate.push({
 							id:v.id,
@@ -133,6 +140,8 @@
 						})
 						this.showLoading = false
 					})
+				}).catch(err=>{
+					uni.stopPullDownRefresh()
 				})
 			},
 			// 点击左边分类

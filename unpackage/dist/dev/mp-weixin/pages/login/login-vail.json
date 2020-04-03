@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "valid-code": "/components/common/vaildCode",
+    "uni-status-bar": "/components/uni-ui/uni-status-bar/uni-status-bar",
+    "common-button": "/components/common/common-button"
+  }
+}

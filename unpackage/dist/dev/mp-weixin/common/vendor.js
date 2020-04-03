@@ -754,7 +754,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -1684,8 +1684,8 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 16));
 
 var _cart = _interopRequireDefault(__webpack_require__(/*! @/store/modules/cart.js */ 17));
-var _path = _interopRequireDefault(__webpack_require__(/*! @/store/modules/path.js */ 18));
-var _user = _interopRequireDefault(__webpack_require__(/*! @/store/modules/user.js */ 19));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _path = _interopRequireDefault(__webpack_require__(/*! @/store/modules/path.js */ 20));
+var _user = _interopRequireDefault(__webpack_require__(/*! @/store/modules/user.js */ 21));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 _vue.default.use(_vuex.default);var _default =
 
@@ -2654,55 +2654,13 @@ var index_esm = {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; //import $H from '@/common/lib/request.js';
-//import $U from '@/common/lib/util.js';
-var _default = {
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _request = _interopRequireDefault(__webpack_require__(/*! @/common/lib/request.js */ 18));
+var _util = _interopRequireDefault(__webpack_require__(/*! @/common/lib/util.js */ 19));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
+{
   state: {
-    list: [
-    {
-      checked: false,
-      id: 2,
-      title: "标题",
-      cover: "/static/images/demo/cate_01.png",
-      attrs: [
-      {
-        title: "大小",
-        selected: 0,
-        list: [
-        { name: "大" },
-        { name: "小" }] }],
-
-
-
-      pprice: 3333,
-      num: 1,
-      minnum: 1,
-      maxnum: 5 },
-
-    {
-      checked: false,
-      id: 5,
-      title: "标题",
-      cover: "/static/images/demo/cate_01.png",
-      attrs: [
-      {
-        title: "大小",
-        selected: 0,
-        list: [
-        { name: "大" },
-        { name: "小" }] }],
-
-
-
-      pprice: 3333,
-      num: 1,
-      minnum: 1,
-      maxnum: 5 }],
-
-
+    list: [],
     //选中id数组
     selectedList: [],
-    popupShow: "none",
     //当前操作的商品
     popupIndex: -1 },
 
@@ -2714,9 +2672,10 @@ var _default = {
     //合计
     totalPrice: function totalPrice(state) {
       var total = 0;
+      if (state.list.length === 0) return total;
       state.list.forEach(function (v) {
         if (state.selectedList.indexOf(v.id) > -1) {
-          total += v.pprice * v.num;
+          total += v.price * v.num;
         }
       });
       return total;
@@ -2724,12 +2683,32 @@ var _default = {
     disableSelectAll: function disableSelectAll(state) {
       return state.list.length === 0;
     },
-    //拿到当前需要修改属性的商品
-    popupData: function popupData(state) {
-      return state.popupIndex > -1 ? state.list[state.popupIndex] : {};
+
+    cartCount: function cartCount(state) {
+      if (state.list.length <= 99) {
+        return state.list.length;
+      }
+      return '99+';
     } },
 
+
   mutations: {
+    initCartList: function initCartList(state, list) {
+      state.list = list;
+      console.log(state.list);
+
+      //$U.updateCartBadge(state.list.length)
+      /*
+      let count = state.list.length
+      if(count > 0){
+      	uni.setTabBarBadge({
+      		index:2,
+      		text:count.toString()
+      	})
+      }
+      */
+
+    },
     //全选
     selectAll: function selectAll(state) {
       state.selectedList = state.list.map(function (v) {
@@ -2762,17 +2741,48 @@ var _default = {
       state.list = state.list.filter(function (v) {
         return state.selectedList.indexOf(v.id) === -1;
       });
+      //$U.updateCartBadge(state.list.length)
+
     },
     //加入购物车
     addGoodsToCart: function addGoodsToCart(state, goods) {
       state.list.unshift(goods);
+
+      //$U.updateCartBadge(state.list.length)
+    },
+
+    clearCart: function clearCart(state) {
+      state.list = [];
+      state.selectedList = [];
     } },
 
   actions: {
-    doSelectAll: function doSelectAll(_ref) {var commit = _ref.commit,getters = _ref.getters;
+    ///product/cart/'+this.userInfo.id
+    // 更新购物车列表
+    updateCartList: function updateCartList(_ref) {var state = _ref.state,commit = _ref.commit;
+      var userInfo = uni.getStorageSync('userInfo');
+      if (userInfo) {
+        userInfo = JSON.parse(userInfo);
+      }
+      return new Promise(function (res, rej) {
+        _request.default.get('/product/cart/' + userInfo.user.id, {}, {
+          token: true,
+          toast: false }).
+        then(function (result) {
+          // 取消选中状态
+          commit('unSelectAll');
+          // 赋值
+          commit('initCartList', result);
+          res(result);
+        }).catch(function (err) {
+          rej(err);
+        });
+      });
+    },
+    doSelectAll: function doSelectAll(_ref2) {var commit = _ref2.commit,getters = _ref2.getters;
       getters.checkedAll ? commit('unSelectAll') : commit('selectAll');
     },
-    doDelGoods: function doDelGoods(_ref2) {var commit = _ref2.commit,state = _ref2.state;
+    doDelGoods: function doDelGoods(_ref3) {var commit = _ref3.commit,state = _ref3.state;
 
       if (state.selectedList.length === 0) {
         return uni.showToast({
@@ -2784,10 +2794,18 @@ var _default = {
         content: '是否删除选中',
         success: function success(res) {
           if (res.confirm) {
-            commit('delGoods');
-            commit('unSelectAll');
-            uni.showToast({
-              title: '删除成功' });
+
+            _request.default.post('/product/cart/delete', {
+              cartIds: state.selectedList },
+            {
+              token: true }).
+            then(function (res) {
+              commit('delGoods');
+              commit('unSelectAll');
+              uni.showToast({
+                title: res });
+
+            });
 
           }
         } });
@@ -2797,7 +2815,191 @@ var _default = {
 
 /***/ }),
 
-/***/ 177:
+/***/ 18:
+/*!**********************************************************************************!*\
+  !*** D:/Workspance/HBuilderProjects/uni-app-mango-diancan/common/lib/request.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _index = _interopRequireDefault(__webpack_require__(/*! @/store/index.js */ 15));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};var ownKeys = Object.keys(source);if (typeof Object.getOwnPropertySymbols === 'function') {ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {return Object.getOwnPropertyDescriptor(source, sym).enumerable;}));}ownKeys.forEach(function (key) {_defineProperty(target, key, source[key]);});}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var _default =
+{
+  // 全局配置
+  common: {
+    baseUrl: "http://192.168.1.103:8085",
+    header: _defineProperty({
+      'Content-Type': 'application/json;charset=UTF-8' }, "Content-Type",
+    'application/x-www-form-urlencoded'),
+
+    data: {},
+    method: 'GET',
+    dataType: 'json' },
+
+
+  // 请求 返回promise
+  request: function request() {var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    // 组织参数
+    options.url = this.common.baseUrl + options.url;
+    options.header = options.header || this.common.header;
+    options.data = options.data || this.common.data;
+    options.method = options.method || this.common.method;
+    options.dataType = options.dataType || this.common.dataType;
+
+    //console.log(options.header.token)
+    // token
+
+    /*
+    if (options.token) {
+    	//options.header.token = $store.state.user.token
+    	// 二次验证
+    	if (options.checkToken && !options.header.token) {
+    		uni.showToast({
+    			title: '请先登录',
+    			icon: 'none'
+    		});
+    		return uni.navigateTo({
+    			url: '/pages/login/login',
+    		});
+    	}
+    }
+    */
+    // 请求
+    return new Promise(function (res, rej) {
+      // 请求之前... todo
+
+      // 请求中...
+      uni.request(_objectSpread({},
+      options, {
+        success: function success(result) {
+          // 返回原始数据
+          if (options.native) {
+            return res(result);
+          }
+          // 服务端失败
+          if (result.statusCode !== 200) {
+            if (options.toast !== false) {
+              uni.showToast({
+                title: result.data.msg || '服务端失败',
+                icon: 'none' });
+
+            }
+            return rej(result.data);
+          }
+          // 成功
+          var data = result.data.data;
+          res(data);
+        },
+        fail: function fail(error) {
+          uni.showToast({
+            title: error.errMsg || '请求失败',
+            icon: 'none' });
+
+          return rej();
+        } }));
+
+    });
+  },
+  // get请求
+  get: function get(url) {var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    options.url = url;
+    options.data = data;
+    options.method = 'GET';
+    return this.request(options);
+  },
+  // post请求
+  post: function post(url) {var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    options.url = url;
+    options.data = data;
+    options.method = 'POST';
+    return this.request(options);
+  },
+  // delete请求
+  del: function del(url) {var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    options.url = url;
+    options.data = data;
+    options.method = 'DELETE';
+    return this.request(options);
+  } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 19:
+/*!*******************************************************************************!*\
+  !*** D:/Workspance/HBuilderProjects/uni-app-mango-diancan/common/lib/util.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  // 更新tabbar角标
+  updateCartBadge: function updateCartBadge(count) {
+    if (count > 0) {
+      return uni.setTabBarBadge({
+        index: 2,
+        text: count.toString() });
+
+    }
+    uni.removeTabBarBadge({
+      index: 2 });
+
+  },
+  // 判断订单状态
+  formatStatus: function formatStatus(order) {
+    if (!order) {
+      return '';
+    }
+
+    // 未支付
+    if (order.status === 1) {
+      return "待支付";
+    }
+    // 未发货
+    if (order.status === 2) {
+      return "待发货";
+    }
+
+
+    if (order.status === 3) {
+      return '待收货';
+    }
+
+
+    if (order.status === 4) {
+      return '待评价';
+    }
+
+    if (order.status === 5) {
+
+      return '已完成';
+    }
+
+    if (order.status === 6) {
+      if (order.refundStatus !== 'pending') {
+        switch (order.refundStatus) {
+          case 'success':
+            return '退款成功';
+            break;
+          case 'failed':
+            return '退款失败';
+            break;}
+
+      }
+      return '已取消';
+    }
+
+    if (order.status === 7) {
+      return '退款中';
+    }
+
+  } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 190:
 /*!*******************************************************************************!*\
   !*** D:/Workspance/HBuilderProjects/uni-app-mango-diancan/common/lib/time.js ***!
   \*******************************************************************************/
@@ -2912,129 +3114,6 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     //输出还剩多少时间
     return "".concat(days, "\u5929 ").concat(hours, "\u5C0F\u65F6 ").concat(minutes, "\u5206 ").concat(seconds, "\u79D2");
   } };exports.default = _default;
-
-/***/ }),
-
-/***/ 18:
-/*!**********************************************************************************!*\
-  !*** D:/Workspance/HBuilderProjects/uni-app-mango-diancan/store/modules/path.js ***!
-  \**********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;function _toConsumableArray(arr) {return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();}function _nonIterableSpread() {throw new TypeError("Invalid attempt to spread non-iterable instance");}function _iterableToArray(iter) {if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);}function _arrayWithoutHoles(arr) {if (Array.isArray(arr)) {for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {arr2[i] = arr[i];}return arr2;}}var _default = {
-  state: {
-    list: [
-      /*
-           {
-           	name:"",
-           	phone:"",
-           	address:"",
-           	detail:"",
-           	status:1
-           }
-           */] },
-
-
-  getters: {
-    // 获取默认地址
-    defaultPath: function defaultPath(state) {
-      return state.list.filter(function (v) {return v.isdefault;});
-    } },
-
-  mutations: {
-    // 覆盖收货地址
-    updatePathList: function updatePathList(state, _ref) {var refresh = _ref.refresh,list = _ref.list;
-      state.list = refresh ? list : [].concat(_toConsumableArray(state.list), _toConsumableArray(list));
-    },
-    // 创建收货地址
-    createPath: function createPath(state, item) {
-      state.list.unshift(item);
-    },
-    // 删除收货地址
-    delPath: function delPath(state, index) {
-      state.list.splice(index, 1);
-    },
-    // 修改收货地址
-    updatePath: function updatePath(state, _ref2) {var index = _ref2.index,item = _ref2.item;
-      for (var key in item) {
-        state.list[index][key] = item[key];
-      }
-    },
-    // 取消默认地址
-    removeDefault: function removeDefault(state) {
-      state.list.forEach(function (v) {
-        if (v.status === 1) {
-          v.status = 0;
-        }
-      });
-    } },
-
-  actions: {
-    // 修改地址
-    updatePathAction: function updatePathAction(_ref3, obj) {var commit = _ref3.commit;
-      if (obj.item.status === 1) {
-        commit('removeDefault');
-      }
-      commit('updatePath', obj);
-    },
-    // 增加地址
-    createPathAction: function createPathAction(_ref4, item) {var commit = _ref4.commit;
-      if (item.status === 1) {
-        commit('removeDefault');
-      }
-      commit('createPath', item);
-    } } };exports.default = _default;
-
-/***/ }),
-
-/***/ 19:
-/*!**********************************************************************************!*\
-  !*** D:/Workspance/HBuilderProjects/uni-app-mango-diancan/store/modules/user.js ***!
-  \**********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  state: {
-    // 登录状态
-    loginStatus: false,
-    // token
-    token: null,
-    // 用户信息
-    userInfo: {} },
-
-  mutations: {
-    // 初始化登录状态
-    initUser: function initUser(state) {
-      var userInfo = uni.getStorageSync('userInfo');
-      if (userInfo) {
-        userInfo = JSON.parse(userInfo);
-
-        state.userInfo = userInfo.user;
-        state.token = userInfo.token;
-        state.loginStatus = true;
-      }
-    },
-    // 登录
-    login: function login(state, userinfo) {
-      state.userInfo = userinfo.user;
-      state.loginStatus = true;
-      state.token = userinfo.token;
-      // 持久化存储
-      uni.setStorageSync('userInfo', JSON.stringify(userinfo));
-    },
-    // 退出登录
-    logout: function logout(state) {
-      state.userInfo = {};
-      state.loginStatus = false;
-      state.token = null;
-      uni.removeStorageSync('userInfo');
-
-    } } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 
@@ -8570,7 +8649,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -8591,14 +8670,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -8674,7 +8753,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = diff(data, mpData);
     if (Object.keys(diffData).length) {
-      if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -9071,123 +9150,149 @@ internalMixin(Vue);
 
 /***/ 20:
 /*!**********************************************************************************!*\
-  !*** D:/Workspance/HBuilderProjects/uni-app-mango-diancan/common/lib/request.js ***!
+  !*** D:/Workspance/HBuilderProjects/uni-app-mango-diancan/store/modules/path.js ***!
   \**********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _index = _interopRequireDefault(__webpack_require__(/*! @/store/index.js */ 15));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};var ownKeys = Object.keys(source);if (typeof Object.getOwnPropertySymbols === 'function') {ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {return Object.getOwnPropertyDescriptor(source, sym).enumerable;}));}ownKeys.forEach(function (key) {_defineProperty(target, key, source[key]);});}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var _default =
-{
-  // 全局配置
-  common: {
-    baseUrl: "http://localhost:8085",
-    header: _defineProperty({
-      'Content-Type': 'application/json;charset=UTF-8' }, "Content-Type",
-    'application/x-www-form-urlencoded'),
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;function _toConsumableArray(arr) {return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();}function _nonIterableSpread() {throw new TypeError("Invalid attempt to spread non-iterable instance");}function _iterableToArray(iter) {if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);}function _arrayWithoutHoles(arr) {if (Array.isArray(arr)) {for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {arr2[i] = arr[i];}return arr2;}}var _default = {
+  state: {
+    list: [
+      /*
+           {
+           	name:"",
+           	phone:"",
+           	address:"",
+           	detail:"",
+           	status:1
+           }
+           */] },
 
-    data: {},
-    method: 'GET',
-    dataType: 'json' },
 
+  getters: {
+    // 获取默认地址
+    defaultPath: function defaultPath(state) {
+      return state.list.filter(function (v) {return v.isdefault;});
+    } },
 
-  // 请求 返回promise
-  request: function request() {var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    // 组织参数
-    options.url = this.common.baseUrl + options.url;
-    options.header = options.header || this.common.header;
-    options.data = options.data || this.common.data;
-    options.method = options.method || this.common.method;
-    options.dataType = options.dataType || this.common.dataType;
-
-    // token
-    if (options.token) {
-      options.header.token = _index.default.state.user.token;
-      // 二次验证
-      if (options.checkToken && !options.header.token) {
-        uni.showToast({
-          title: '请先登录',
-          icon: 'none' });
-
-        return uni.navigateTo({
-          url: '/pages/login/login' });
-
+  mutations: {
+    // 覆盖收货地址
+    updatePathList: function updatePathList(state, _ref) {var refresh = _ref.refresh,list = _ref.list;
+      state.list = refresh ? list : [].concat(_toConsumableArray(state.list), _toConsumableArray(list));
+    },
+    // 创建收货地址
+    createPath: function createPath(state, item) {
+      state.list.unshift(item);
+    },
+    // 删除收货地址
+    delPath: function delPath(state, index) {
+      state.list.splice(index, 1);
+    },
+    // 修改收货地址
+    updatePath: function updatePath(state, _ref2) {var index = _ref2.index,item = _ref2.item;
+      for (var key in item) {
+        state.list[index][key] = item[key];
       }
-    }
+    },
+    // 取消默认地址
+    removeDefault: function removeDefault(state) {
+      state.list.forEach(function (v) {
+        if (v.status === 1) {
+          v.status = 0;
+        }
+      });
+    } },
 
-    // 请求
-    return new Promise(function (res, rej) {
-      // 请求之前... todo
-      // 请求中...
-      uni.request(_objectSpread({},
-      options, {
-        success: function success(result) {
-          // 返回原始数据
-          if (options.native) {
-            return res(result);
-          }
-          // 服务端失败
-          if (result.statusCode !== 200) {
-            if (options.toast !== false) {
-              uni.showToast({
-                title: result.data.msg || '服务端失败',
-                icon: 'none' });
+  actions: {
+    // 修改地址
+    updatePathAction: function updatePathAction(_ref3, obj) {var commit = _ref3.commit;
+      if (obj.item.status === 1) {
+        commit('removeDefault');
+      }
+      commit('updatePath', obj);
+    },
+    // 增加地址
+    createPathAction: function createPathAction(_ref4, item) {var commit = _ref4.commit;
+      if (item.status === 1) {
+        commit('removeDefault');
+      }
+      commit('createPath', item);
+    } } };exports.default = _default;
 
-            }
-            return rej(result.data);
-          }
-          // 成功
-          var data = result.data.data;
-          res(data);
-        },
-        fail: function fail(error) {
-          uni.showToast({
-            title: error.errMsg || '请求失败',
-            icon: 'none' });
+/***/ }),
 
-          return rej();
-        } }));
+/***/ 21:
+/*!**********************************************************************************!*\
+  !*** D:/Workspance/HBuilderProjects/uni-app-mango-diancan/store/modules/user.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-    });
-  },
-  // get请求
-  get: function get(url) {var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    options.url = url;
-    options.data = data;
-    options.method = 'GET';
-    return this.request(options);
-  },
-  // post请求
-  post: function post(url) {var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    options.url = url;
-    options.data = data;
-    options.method = 'POST';
-    return this.request(options);
-  },
-  // delete请求
-  del: function del(url) {var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    options.url = url;
-    options.data = data;
-    options.method = 'DELETE';
-    return this.request(options);
-  } };exports.default = _default;
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  state: {
+    // 登录状态
+    loginStatus: false,
+    // token
+    token: null,
+    // 用户信息
+    userInfo: {} },
+
+  mutations: {
+    updateUser: function updateUser(state, user) {
+      state.userInfo.avatar = user.avatar;
+      state.userInfo.username = user.username;
+      var data = {
+        user: state.userInfo,
+        token: state.token };
+
+      uni.setStorageSync('userInfo', JSON.stringify(data));
+    },
+    // 初始化登录状态
+    initUser: function initUser(state) {
+      var userInfo = uni.getStorageSync('userInfo');
+      if (userInfo) {
+        userInfo = JSON.parse(userInfo);
+
+        state.userInfo = userInfo.user;
+        state.token = userInfo.token;
+        state.loginStatus = true;
+      }
+    },
+    // 登录
+    login: function login(state, userinfo) {
+      console.log(userinfo);
+      state.userInfo = userinfo.user;
+      state.loginStatus = true;
+      state.token = userinfo.token;
+      // 持久化存储
+      uni.setStorageSync('userInfo', JSON.stringify(userinfo));
+    },
+    // 退出登录
+    logout: function logout(state) {
+      state.userInfo = {};
+      state.loginStatus = false;
+      state.token = null;
+      uni.removeStorageSync('userInfo');
+    } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 
-/***/ 27:
+/***/ 28:
 /*!**********************************************************!*\
   !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
   \**********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! regenerator-runtime */ 28);
+module.exports = __webpack_require__(/*! regenerator-runtime */ 29);
 
 
 /***/ }),
 
-/***/ 28:
+/***/ 29:
 /*!************************************************************!*\
   !*** ./node_modules/regenerator-runtime/runtime-module.js ***!
   \************************************************************/
@@ -9218,7 +9323,7 @@ var oldRuntime = hadRuntime && g.regeneratorRuntime;
 // Force reevalutation of runtime.js.
 g.regeneratorRuntime = undefined;
 
-module.exports = __webpack_require__(/*! ./runtime */ 29);
+module.exports = __webpack_require__(/*! ./runtime */ 30);
 
 if (hadRuntime) {
   // Restore the original runtime.
@@ -9235,7 +9340,38 @@ if (hadRuntime) {
 
 /***/ }),
 
-/***/ 29:
+/***/ 3:
+/*!***********************************!*\
+  !*** (webpack)/buildin/global.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || new Function("return this")();
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+
+/***/ 30:
 /*!*****************************************************!*\
   !*** ./node_modules/regenerator-runtime/runtime.js ***!
   \*****************************************************/
@@ -9967,38 +10103,7 @@ if (hadRuntime) {
 
 /***/ }),
 
-/***/ 3:
-/*!***********************************!*\
-  !*** (webpack)/buildin/global.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-
-/***/ 322:
+/***/ 352:
 /*!***********************************************************************************************************!*\
   !*** D:/Workspance/HBuilderProjects/uni-app-mango-diancan/components/uni-ui/uParse/src/libs/html2json.js ***!
   \***********************************************************************************************************/
@@ -10020,8 +10125,8 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-var _wxDiscode = _interopRequireDefault(__webpack_require__(/*! ./wxDiscode */ 323));
-var _htmlparser = _interopRequireDefault(__webpack_require__(/*! ./htmlparser */ 324));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /**
+var _wxDiscode = _interopRequireDefault(__webpack_require__(/*! ./wxDiscode */ 353));
+var _htmlparser = _interopRequireDefault(__webpack_require__(/*! ./htmlparser */ 354));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /**
                                                                                                                                                                  * html2Json 改造来自: https://github.com/Jxck/html2json
                                                                                                                                                                  *
                                                                                                                                                                  *
@@ -10270,7 +10375,7 @@ html2json;exports.default = _default;
 
 /***/ }),
 
-/***/ 323:
+/***/ 353:
 /*!***********************************************************************************************************!*\
   !*** D:/Workspance/HBuilderProjects/uni-app-mango-diancan/components/uni-ui/uParse/src/libs/wxDiscode.js ***!
   \***********************************************************************************************************/
@@ -10475,7 +10580,7 @@ function urlToHttpUrl(url, domain) {
 
 /***/ }),
 
-/***/ 324:
+/***/ 354:
 /*!************************************************************************************************************!*\
   !*** D:/Workspance/HBuilderProjects/uni-app-mango-diancan/components/uni-ui/uParse/src/libs/htmlparser.js ***!
   \************************************************************************************************************/
@@ -10642,7 +10747,7 @@ HTMLParser;exports.default = _default;
 
 /***/ }),
 
-/***/ 337:
+/***/ 360:
 /*!*****************************************************************************************************!*\
   !*** D:/Workspance/HBuilderProjects/uni-app-mango-diancan/components/uni-ui/uni-swipe-action/mp.js ***!
   \*****************************************************************************************************/
@@ -10735,7 +10840,7 @@ HTMLParser;exports.default = _default;
 
 /***/ }),
 
-/***/ 36:
+/***/ 37:
 /*!************************************************************************************!*\
   !*** D:/Workspance/HBuilderProjects/uni-app-mango-diancan/common/mixin/loading.js ***!
   \************************************************************************************/
@@ -10768,6 +10873,112 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 "use strict";
 
+
+/***/ }),
+
+/***/ 430:
+/*!*************************************************************************************************!*\
+  !*** D:/Workspance/HBuilderProjects/uni-app-mango-diancan/components/uni-ui/uni-icons/icons.js ***!
+  \*************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  'contact': "\uE100",
+  'person': "\uE101",
+  'personadd': "\uE102",
+  'contact-filled': "\uE130",
+  'person-filled': "\uE131",
+  'personadd-filled': "\uE132",
+  'phone': "\uE200",
+  'email': "\uE201",
+  'chatbubble': "\uE202",
+  'chatboxes': "\uE203",
+  'phone-filled': "\uE230",
+  'email-filled': "\uE231",
+  'chatbubble-filled': "\uE232",
+  'chatboxes-filled': "\uE233",
+  'weibo': "\uE260",
+  'weixin': "\uE261",
+  'pengyouquan': "\uE262",
+  'chat': "\uE263",
+  'qq': "\uE264",
+  'videocam': "\uE300",
+  'camera': "\uE301",
+  'mic': "\uE302",
+  'location': "\uE303",
+  'mic-filled': "\uE332",
+  'speech': "\uE332",
+  'location-filled': "\uE333",
+  'micoff': "\uE360",
+  'image': "\uE363",
+  'map': "\uE364",
+  'compose': "\uE400",
+  'trash': "\uE401",
+  'upload': "\uE402",
+  'download': "\uE403",
+  'close': "\uE404",
+  'redo': "\uE405",
+  'undo': "\uE406",
+  'refresh': "\uE407",
+  'star': "\uE408",
+  'plus': "\uE409",
+  'minus': "\uE410",
+  'circle': "\uE411",
+  'checkbox': "\uE411",
+  'close-filled': "\uE434",
+  'clear': "\uE434",
+  'refresh-filled': "\uE437",
+  'star-filled': "\uE438",
+  'plus-filled': "\uE439",
+  'minus-filled': "\uE440",
+  'circle-filled': "\uE441",
+  'checkbox-filled': "\uE442",
+  'closeempty': "\uE460",
+  'refreshempty': "\uE461",
+  'reload': "\uE462",
+  'starhalf': "\uE463",
+  'spinner': "\uE464",
+  'spinner-cycle': "\uE465",
+  'search': "\uE466",
+  'plusempty': "\uE468",
+  'forward': "\uE470",
+  'back': "\uE471",
+  'left-nav': "\uE471",
+  'checkmarkempty': "\uE472",
+  'home': "\uE500",
+  'navigate': "\uE501",
+  'gear': "\uE502",
+  'paperplane': "\uE503",
+  'info': "\uE504",
+  'help': "\uE505",
+  'locked': "\uE506",
+  'more': "\uE507",
+  'flag': "\uE508",
+  'home-filled': "\uE530",
+  'gear-filled': "\uE532",
+  'info-filled': "\uE534",
+  'help-filled': "\uE535",
+  'more-filled': "\uE537",
+  'settings': "\uE560",
+  'list': "\uE562",
+  'bars': "\uE563",
+  'loop': "\uE565",
+  'paperclip': "\uE567",
+  'eye': "\uE568",
+  'arrowup': "\uE580",
+  'arrowdown': "\uE581",
+  'arrowleft': "\uE582",
+  'arrowright': "\uE583",
+  'arrowthinup': "\uE584",
+  'arrowthindown': "\uE585",
+  'arrowthinleft': "\uE586",
+  'arrowthinright': "\uE587",
+  'pulldown': "\uE588",
+  'closefill': "\uE589",
+  'sound': "\uE590",
+  'scan': "\uE612" };exports.default = _default;
 
 /***/ }),
 
@@ -11677,7 +11888,7 @@ module.exports = {"_from":"@dcloudio/uni-stat@alpha","_id":"@dcloudio/uni-stat@2
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": {}, "pages/class/class": { "navigationBarTitleText": "菜单" }, "pages/cart/cart": {}, "pages/profile/profile": {}, "pages/search/search": {}, "pages/search/search-list": { "enablePullDownRefresh": true }, "pages/detail/detail": {}, "pages/detail-comments/detail-comments": { "navigationBarTitleText": "商品评价", "enablePullDownRefresh": true }, "pages/user-set/user-set": { "navigationBarTitleText": "用户设置" }, "pages/user-info/user-info": { "navigationBarTitleText": "个人资料" }, "pages/user-address/user-address": { "navigationBarTitleText": "收货地址", "enablePullDownRefresh": true }, "pages/user-address-edit/user-address-edit": { "navigationBarTitleText": "编辑收货地址" }, "pages/order/order": { "navigationBarTitleText": "我的订单" }, "pages/order-confirm/order-confirm": { "navigationBarTitleText": "订单配送至", "navigationBarBackgroundColor": "#FD6801", "navigationBarTextStyle": "white" }, "pages/order-invoice/order-invoice": { "navigationBarTitleText": "发票" }, "pages/login/login": {}, "pages/msg-list/msg-list": { "navigationBarTitleText": "消息列表" }, "pages/msg-detail/msg-detail": { "navigationBarTitleText": "消息详情页" }, "pages/pay-methods/pay-methods": { "navigationBarTitleText": "选择支付方式" }, "pages/pay-result/pay-result": { "navigationBarTitleText": "支付成功" }, "pages/order-coupon/order-coupon": { "navigationBarTitleText": "优惠券" }, "pages/order-detail/order-detail": {}, "pages/after-sale/after-sale": { "navigationBarTitleText": "申请售后" }, "pages/about/about": { "navigationBarTitleText": "关于xxx商城" }, "pages/coupon/coupon": { "enablePullDownRefresh": true, "navigationBarTitleText": "领取优惠券" }, "pages/order-refund/order-refund": { "navigationBarTitleText": "申请退款" } }, "globalStyle": { "navigationBarTextStyle": "black", "navigationBarTitleText": "芒果点餐", "navigationBarBackgroundColor": "#F1F1F1", "backgroundColor": "#F1F1F1" } };exports.default = _default;
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "enablePullDownRefresh": true, "usingComponents": { "swiper-image": "/components/index/swiper-image", "index-nav": "/components/index/index-nav", "three-adv": "/components/index/three-adv" }, "usingAutoImportComponents": {} }, "pages/class/class": { "enablePullDownRefresh": true, "navigationBarTitleText": "菜单", "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/cart/cart": { "enablePullDownRefresh": true, "usingComponents": { "uni-nav-bar": "/components/uni-ui/uni-nav-bar/uni-nav-bar", "uni-number-box": "/components/uni-ui/uni-number-box/uni-number-box", "common-list": "/components/common/common-list" }, "usingAutoImportComponents": {} }, "pages/profile/profile": { "usingComponents": { "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item" }, "usingAutoImportComponents": {} }, "pages/search/search": { "usingComponents": { "color-tag": "/components/search/color-tag", "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item" }, "usingAutoImportComponents": {} }, "pages/search/search-list": { "enablePullDownRefresh": true, "usingComponents": { "search-list": "/components/search/search-list", "no-thing": "/components/common/no-thing", "uni-drawer": "/components/uni-ui/uni-drawer/uni-drawer", "zcm-radio-group": "/components/common/radio-group" }, "usingAutoImportComponents": {} }, "pages/detail/detail": { "usingComponents": { "swiper-image": "/components/index/swiper-image", "base-info": "/components/detail/base-info", "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item", "comments-scroll": "/components/detail/comments-scroll", "u-parse": "/components/uni-ui/uParse/src/wxParse", "bottom-btn": "/components/detail/bottom-btn", "wacradio-group": "/components/common/radio-group", "uni-number-box": "/components/uni-ui/uni-number-box/uni-number-box" }, "usingAutoImportComponents": {} }, "pages/detail-comments/detail-comments": { "navigationBarTitleText": "商品评价", "enablePullDownRefresh": true, "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/user-set/user-set": { "navigationBarTitleText": "更多设置", "usingComponents": { "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item" }, "usingAutoImportComponents": {} }, "pages/user-info/user-info": { "navigationBarTitleText": "个人资料", "usingComponents": { "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item" }, "usingAutoImportComponents": {} }, "pages/user-address/user-address": { "navigationBarTitleText": "收货地址", "enablePullDownRefresh": true, "usingComponents": { "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item", "uni-swipe-action": "/components/uni-ui/uni-swipe-action/uni-swipe-action", "no-thing": "/components/common/no-thing" }, "usingAutoImportComponents": {} }, "pages/user-address-edit/user-address-edit": { "navigationBarTitleText": "编辑收货地址", "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/order/order": { "navigationBarTitleText": "我的订单", "usingComponents": { "no-thing": "/components/common/no-thing", "order-list": "/components/order/order-list" }, "usingAutoImportComponents": {} }, "pages/order-confirm/order-confirm": { "navigationBarTitleText": "订单配送至", "navigationBarBackgroundColor": "#FD6801", "navigationBarTextStyle": "white", "usingComponents": { "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item", "price": "/components/common/price" }, "usingAutoImportComponents": {} }, "pages/order-invoice/order-invoice": { "navigationBarTitleText": "发票", "usingComponents": { "card": "/components/common/card", "zcm-radio-group": "/components/common/radio-group" }, "usingAutoImportComponents": {} }, "pages/logistics-detail/logistics-detail": { "navigationBarTitleText": "快递员信息", "usingComponents": { "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item" }, "usingAutoImportComponents": {} }, "pages/login/login": { "usingComponents": { "uni-status-bar": "/components/uni-ui/uni-status-bar/uni-status-bar" }, "usingAutoImportComponents": {} }, "pages/login/login-vail": { "usingComponents": { "valid-code": "/components/common/vaildCode", "uni-status-bar": "/components/uni-ui/uni-status-bar/uni-status-bar", "common-button": "/components/common/common-button" }, "usingAutoImportComponents": {} }, "pages/msg-list/msg-list": { "navigationBarTitleText": "消息列表", "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/msg-detail/msg-detail": { "navigationBarTitleText": "消息详情页", "usingComponents": { "u-parse": "/components/uni-ui/uParse/src/wxParse" }, "usingAutoImportComponents": {} }, "pages/pay-methods/pay-methods": { "navigationBarTitleText": "选择支付方式", "usingComponents": { "price": "/components/common/price", "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item" }, "usingAutoImportComponents": {} }, "pages/pay-result/pay-result": { "navigationBarTitleText": "支付成功", "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/order-coupon/order-coupon": { "navigationBarTitleText": "优惠券", "usingComponents": { "no-thing": "/components/common/no-thing", "coupon": "/components/order-coupon/coupon" }, "usingAutoImportComponents": {} }, "pages/order-detail/order-detail": { "usingComponents": { "order-list-item": "/components/order/order-list-item", "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item", "price": "/components/common/price", "card": "/components/common/card", "common-button": "/components/common/common-button" }, "usingAutoImportComponents": {} }, "pages/after-sale/after-sale": { "navigationBarTitleText": "申请售后", "usingComponents": { "card": "/components/common/card", "zcm-radio-group": "/components/common/radio-group" }, "usingAutoImportComponents": {} }, "pages/about/about": { "navigationBarTitleText": "芒果点餐", "usingComponents": { "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item" }, "usingAutoImportComponents": {} }, "pages/coupon/coupon": { "enablePullDownRefresh": true, "navigationBarTitleText": "领取优惠券", "usingComponents": { "coupon": "/components/order-coupon/coupon", "no-thing": "/components/common/no-thing" }, "usingAutoImportComponents": {} }, "pages/order-refund/order-refund": { "navigationBarTitleText": "申请退款", "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/order/comment": { "navigationBarTitleText": "商品评价", "usingComponents": { "uni-rate": "/components/uni-ui/uni-rate/uni-rate" }, "usingAutoImportComponents": {} }, "pages/user-info/user-info-edit": { "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/login/register": {} }, "globalStyle": { "navigationBarTextStyle": "black", "navigationBarTitleText": "芒果点餐", "navigationBarBackgroundColor": "#F1F1F1", "backgroundColor": "#F1F1F1" } };exports.default = _default;
 
 /***/ }),
 

@@ -16,6 +16,7 @@ export default {
 		//合计
 		totalPrice:(state)=>{
 			var total = 0
+			if(state.list.length === 0) return total
 			state.list.forEach(v=>{
 				if(state.selectedList.indexOf(v.id) > -1){
 					 total += v.price*v.num
@@ -38,6 +39,7 @@ export default {
 	mutations:{
 		initCartList(state,list){
 			state.list = list
+			console.log(state.list)
 			
 			//$U.updateCartBadge(state.list.length)
 			/*
@@ -51,9 +53,6 @@ export default {
 			*/
 		
 		},
-		
-		
-		
 		//全选
 		selectAll(state){
 			state.selectedList = state.list.map(v=>{
@@ -102,7 +101,28 @@ export default {
 		}
 	},
 	actions:{
-		
+		///product/cart/'+this.userInfo.id
+		// 更新购物车列表
+		updateCartList({state,commit}){
+			let userInfo = uni.getStorageSync('userInfo')
+			if (userInfo) {
+				userInfo = JSON.parse(userInfo)
+			}
+			return new Promise((res,rej)=>{
+				$H.get('/product/cart/'+userInfo.user.id,{},{
+					token:true,
+					toast:false
+				}).then(result=>{
+					// 取消选中状态
+					commit('unSelectAll')
+					// 赋值
+					commit('initCartList',result)
+					res(result)
+				}).catch(err=>{
+					rej(err)
+				})
+			})
+		},
 		doSelectAll({commit,getters}){
 			getters.checkedAll ? commit('unSelectAll'):commit('selectAll')
 		},
